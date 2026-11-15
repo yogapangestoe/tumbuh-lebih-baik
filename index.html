@@ -81,7 +81,7 @@
       user-select: none !important;
     }
 
-    /* Gaussian Blur Orbs (Hijau Tua & Hijau Muda) */
+    /* Gaussian Blur Orbs */
     .gaussian-orb-deep {
       position: fixed;
       width: 600px;
@@ -151,7 +151,7 @@
       animation: softModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
     }
 
-    /* Glassmorphism HUD Surfaces with Soft Transitions */
+    /* Glassmorphism HUD Surfaces */
     .hud-glass {
       background: var(--bg-surface);
       backdrop-filter: blur(24px);
@@ -248,6 +248,95 @@
 
     .btn-cyber:active {
       transform: translateY(0px) scale(0.97);
+    }
+
+    /* ========================================================= */
+    /* REPEATING CYBER-VINE GROWTH -> "TUMBUH LEBIH BAIK" REVEAL */
+    /* ========================================================= */
+    @keyframes vineStemGrow {
+      0%   { stroke-dashoffset: 420; opacity: 0; }
+      6%   { opacity: 1; }
+      38%  { stroke-dashoffset: 0; opacity: 1; }
+      82%  { stroke-dashoffset: 0; opacity: 1; }
+      94%  { stroke-dashoffset: 0; opacity: 0; }
+      100% { stroke-dashoffset: 420; opacity: 0; }
+    }
+
+    @keyframes vineLeafBud1 {
+      0%, 10% { transform: scale(0); opacity: 0; }
+      18%     { transform: scale(1); opacity: 1; }
+      82%     { transform: scale(1); opacity: 1; }
+      93%     { transform: scale(0.85); opacity: 0; }
+      100%    { transform: scale(0); opacity: 0; }
+    }
+
+    @keyframes vineLeafBud2 {
+      0%, 18% { transform: scale(0); opacity: 0; }
+      26%     { transform: scale(1); opacity: 1; }
+      82%     { transform: scale(1); opacity: 1; }
+      93%     { transform: scale(0.85); opacity: 0; }
+      100%    { transform: scale(0); opacity: 0; }
+    }
+
+    @keyframes vineLeafBud3 {
+      0%, 26% { transform: scale(0); opacity: 0; }
+      34%     { transform: scale(1); opacity: 1; }
+      82%     { transform: scale(1); opacity: 1; }
+      93%     { transform: scale(0.85); opacity: 0; }
+      100%    { transform: scale(0); opacity: 0; }
+    }
+
+    @keyframes titleGrowthReveal {
+      0%, 34% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96);
+        filter: blur(8px);
+      }
+      46% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+        filter: blur(0px);
+      }
+      84% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+        filter: blur(0px);
+      }
+      95% {
+        opacity: 0;
+        transform: translateY(-8px) scale(0.98);
+        filter: blur(4px);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.96);
+        filter: blur(8px);
+      }
+    }
+
+    .cyber-vine-path {
+      stroke-dasharray: 420;
+      stroke-dashoffset: 420;
+      animation: vineStemGrow 7.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+    }
+
+    .vine-bud-1 {
+      transform-origin: 95px 22px;
+      animation: vineLeafBud1 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .vine-bud-2 {
+      transform-origin: 205px 18px;
+      animation: vineLeafBud2 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .vine-bud-3 {
+      transform-origin: 315px 20px;
+      animation: vineLeafBud3 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
+    }
+
+    .tumbuh-title-reveal {
+      animation: titleGrowthReveal 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
     }
 
     /* Multi-Frequency Tech Blinking Animations */
@@ -390,7 +479,7 @@
       </div>
     </div>
 
-    <!-- Split Two-Column Hero: Left = Large Cyber Leaf, Right = Title & CTA -->
+    <!-- Split Two-Column Hero: Left = Large Cyber Leaf, Right = Title + Vine Growth + CTA -->
     <div class="relative z-30 max-w-7xl w-full mx-auto my-auto py-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
 
       <!-- LEFT COLUMN: LARGE FUTURISTIC HOLOGRAPHIC AI BIO-TECH LEAF -->
@@ -468,7 +557,7 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: TITLE, SUBTITLE & SYSTEM ENTRY -->
+      <!-- RIGHT COLUMN: TITLE WITH REPEATING CYBER-PLANT GROWTH + SUBTITLE + CTA -->
       <div class="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
         <!-- Status Pill -->
         <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full hud-card mb-6">
@@ -477,15 +566,59 @@
           <span class="w-2 h-2 rounded-full bg-emerald-500 blink-4 shadow-[0_0_10px_#00c853]"></span>
         </div>
 
-        <!-- 3-Line Title -->
-        <h1 class="font-display font-extrabold tracking-tight leading-[1.2] mb-5">
+        <!-- 3-Line Title + Left-to-Right Tech Vine Animation Before "Tumbuh Lebih Baik" -->
+        <h1 class="font-display font-extrabold tracking-tight leading-[1.2] mb-5 w-full">
           <span class="block text-base sm:text-xl md:text-2xl font-semibold tracking-[0.2em] uppercase mb-1.5" style="color: var(--text-secondary);">
             Selamat Datang di
           </span>
-          <span class="block text-3xl sm:text-5xl xl:text-6xl tracking-tight mb-1.5">
+          <span class="block text-3xl sm:text-5xl xl:text-6xl tracking-tight mb-2">
             Bank Konten
           </span>
-          <span class="block text-3xl sm:text-5xl xl:text-6xl text-cyber-green">
+
+          <!-- Animated Left-to-Right Futuristic Cyber-Vine Stem & Sprouting Leaves -->
+          <div class="w-full max-w-md mx-auto lg:mx-0 my-1.5 h-8 overflow-visible" aria-hidden="true">
+            <svg viewBox="0 0 380 34" class="w-full h-full overflow-visible">
+              <defs>
+                <linearGradient id="vineStrokeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#044729" />
+                  <stop offset="50%" stop-color="#00c853" />
+                  <stop offset="100%" stop-color="#39ff14" />
+                </linearGradient>
+              </defs>
+
+              <!-- Growing Digital Root/Vine Stem from Left to Right -->
+              <path
+                d="M 4 24 Q 55 12, 95 22 T 205 18 T 315 20 L 368 16"
+                fill="none"
+                stroke="url(#vineStrokeGrad)"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                class="cyber-vine-path"
+              />
+
+              <!-- Sprouting Cyber Leaf Node 1 -->
+              <g class="vine-bud-1">
+                <path d="M 95 22 C 88 10, 102 4, 112 8 C 110 18, 102 22, 95 22 Z" fill="#00c853" fill-opacity="0.45" stroke="#39ff14" stroke-width="1.4" />
+                <circle cx="95" cy="22" r="2.8" fill="#39ff14" />
+              </g>
+
+              <!-- Sprouting Cyber Leaf Node 2 -->
+              <g class="vine-bud-2">
+                <path d="M 205 18 C 198 6, 214 2, 224 6 C 221 15, 212 19, 205 18 Z" fill="#00c853" fill-opacity="0.5" stroke="#39ff14" stroke-width="1.4" />
+                <path d="M 205 18 C 200 28, 212 32, 220 28 C 218 22, 211 19, 205 18 Z" fill="#044729" fill-opacity="0.6" stroke="#00c853" stroke-width="1.2" />
+                <circle cx="205" cy="18" r="3" fill="#39ff14" />
+              </g>
+
+              <!-- Sprouting Cyber Leaf Node 3 (Tip Bloom) -->
+              <g class="vine-bud-3">
+                <path d="M 315 20 C 310 7, 326 3, 336 8 C 333 17, 323 21, 315 20 Z" fill="#39ff14" fill-opacity="0.45" stroke="#39ff14" stroke-width="1.5" />
+                <circle cx="368" cy="16" r="3.5" fill="#39ff14" />
+              </g>
+            </svg>
+          </div>
+
+          <!-- Line 3: Revealed Right After Vine Finishes Growing (Loops Continuously) -->
+          <span class="block text-3xl sm:text-5xl xl:text-6xl text-cyber-green tumbuh-title-reveal">
             Tumbuh Lebih Baik
           </span>
         </h1>
@@ -657,42 +790,85 @@
           </div>
         </div>
 
-        <!-- 4 KPI Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest uppercase" style="color: var(--text-muted);">TOTAL UNIT KONTEN</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1"></span>
+        <!-- RESTORED 3-ZONE PIPELINE KPI ARCHITECTURE:
+             LEFT (Large): TOTAL UNIT KONTEN
+             CENTER (4 Sub-Boxes): IDE MENTAH | SCRIPTING | EDITING | SIAP UPLOAD
+             RIGHT (Large): SUDAH TAYANG -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+
+          <!-- LEFT LARGE CARD: TOTAL UNIT KONTEN -->
+          <div class="lg:col-span-3 hud-card rounded-2xl p-6 flex flex-col justify-between border-emerald-400/35 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-[10px] tracking-widest uppercase text-emerald-400 font-bold">TOTAL UNIT KONTEN</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 blink-1 shadow-[0_0_10px_#39ff14]"></span>
             </div>
-            <div id="stat-total" class="font-display text-3xl font-extrabold text-cyber-green">0</div>
-            <div class="text-[11px] text-emerald-400 mt-1 font-mono">CLOUD SYNCHRONIZED</div>
+            <div class="my-2">
+              <div id="stat-total" class="font-display text-4xl sm:text-5xl font-black text-cyber-green">0</div>
+              <p class="font-mono text-[10px] mt-1.5" style="color: var(--text-muted);">SELURUH ARSIP BANK KONTEN</p>
+            </div>
+            <div class="pt-3 border-t border-emerald-500/15 flex items-center justify-between font-mono text-[10px] text-emerald-400">
+              <span>CLOUD SYNC</span>
+              <span>100% AKTIF</span>
+            </div>
           </div>
 
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest uppercase" style="color: var(--text-muted);">SIAP / TAYANG</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-2"></span>
+          <!-- CENTER 4-BOX PIPELINE STAGE GRID -->
+          <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+            <!-- Box 1: Ide Mentah -->
+            <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">IDE MENTAH</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-300 blink-2"></span>
+              </div>
+              <div id="stat-ide" class="font-display text-2xl sm:text-3xl font-extrabold">0</div>
+              <div class="font-mono text-[9px] mt-2 text-emerald-400/85">01 • KONSEP</div>
             </div>
-            <div id="stat-published" class="font-display text-3xl font-extrabold">0</div>
-            <div class="text-[11px] mt-1 font-mono" style="color: var(--text-secondary);">READY & PUBLISHED</div>
+
+            <!-- Box 2: Scripting -->
+            <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">SCRIPTING</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 blink-3"></span>
+              </div>
+              <div id="stat-scripting" class="font-display text-2xl sm:text-3xl font-extrabold">0</div>
+              <div class="font-mono text-[9px] mt-2 text-emerald-400/85">02 • NASKAH</div>
+            </div>
+
+            <!-- Box 3: Editing -->
+            <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">EDITING</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 blink-4"></span>
+              </div>
+              <div id="stat-editing" class="font-display text-2xl sm:text-3xl font-extrabold">0</div>
+              <div class="font-mono text-[9px] mt-2 text-emerald-400/85">03 • VISUAL</div>
+            </div>
+
+            <!-- Box 4: Siap Upload -->
+            <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">SIAP UPLOAD</span>
+                <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1"></span>
+              </div>
+              <div id="stat-ready" class="font-display text-2xl sm:text-3xl font-extrabold text-cyber-green">0</div>
+              <div class="font-mono text-[9px] mt-2 text-emerald-400">04 • READY</div>
+            </div>
           </div>
 
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest uppercase" style="color: var(--text-muted);">DALAM PRODUKSI</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-3"></span>
+          <!-- RIGHT LARGE CARD: SUDAH TAYANG -->
+          <div class="lg:col-span-3 hud-card rounded-2xl p-6 flex flex-col justify-between border-emerald-400/35 relative overflow-hidden">
+            <div class="flex items-center justify-between mb-3">
+              <span class="font-mono text-[10px] tracking-widest uppercase text-emerald-400 font-bold">SUDAH TAYANG</span>
+              <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 blink-5 shadow-[0_0_10px_#39ff14]"></span>
             </div>
-            <div id="stat-progress" class="font-display text-3xl font-extrabold">0</div>
-            <div class="text-[11px] mt-1 font-mono" style="color: var(--text-secondary);">SCRIPTING & EDITING</div>
-          </div>
-
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest uppercase" style="color: var(--text-muted);">IDE MENTAH</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-4"></span>
+            <div class="my-2">
+              <div id="stat-published" class="font-display text-4xl sm:text-5xl font-black text-cyber-green">0</div>
+              <p class="font-mono text-[10px] mt-1.5" style="color: var(--text-muted);">KONTEN TERPUBLIKASI</p>
             </div>
-            <div id="stat-ideas" class="font-display text-3xl font-extrabold text-cyber-green">0</div>
-            <div class="text-[11px] mt-1 font-mono" style="color: var(--text-secondary);">QUEUE DEVELOPMENT</div>
+            <div class="pt-3 border-t border-emerald-500/15 flex items-center justify-between font-mono text-[10px] text-emerald-400">
+              <span>STATUS LIVE</span>
+              <span>PUBLISHED</span>
+            </div>
           </div>
         </div>
 
@@ -1172,14 +1348,12 @@
       let currentEditingId = null;
       let supabaseClient = null;
 
-      // Helper: Reset scroll smoothly to very top on every view/tab switch
       function resetScrollToTop() {
         window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         document.documentElement.scrollTop = 0;
         document.body.scrollTop = 0;
       }
 
-      // Helper: Re-trigger soft fade-up transition cleanly
       function replayViewTransition(el) {
         if (!el) return;
         el.classList.remove('view-transition');
@@ -1187,7 +1361,6 @@
         el.classList.add('view-transition');
       }
 
-      // Dark / Light Theme Switcher
       window.applyTheme = function (theme) {
         const htmlEl = document.documentElement;
         const lblGw = document.getElementById('theme-label-gw');
@@ -1384,14 +1557,18 @@
 
       function renderDashboard() {
         const total = contentBank.length;
-        const published = contentBank.filter(i => i.status === 'Published' || i.status === 'Ready').length;
-        const progress = contentBank.filter(i => i.status === 'Scripting' || i.status === 'Editing').length;
-        const ideas = contentBank.filter(i => i.status === 'Ide Mentah').length;
+        const ideCount = contentBank.filter(i => i.status === 'Ide Mentah').length;
+        const scriptingCount = contentBank.filter(i => i.status === 'Scripting').length;
+        const editingCount = contentBank.filter(i => i.status === 'Editing').length;
+        const readyCount = contentBank.filter(i => i.status === 'Ready').length;
+        const publishedCount = contentBank.filter(i => i.status === 'Published').length;
 
         document.getElementById('stat-total').textContent = total;
-        document.getElementById('stat-published').textContent = published;
-        document.getElementById('stat-progress').textContent = progress;
-        document.getElementById('stat-ideas').textContent = ideas;
+        document.getElementById('stat-ide').textContent = ideCount;
+        document.getElementById('stat-scripting').textContent = scriptingCount;
+        document.getElementById('stat-editing').textContent = editingCount;
+        document.getElementById('stat-ready').textContent = readyCount;
+        document.getElementById('stat-published').textContent = publishedCount;
 
         const pillarCounts = {};
         contentBank.forEach(item => { pillarCounts[item.pillar] = (pillarCounts[item.pillar] || 0) + 1; });
