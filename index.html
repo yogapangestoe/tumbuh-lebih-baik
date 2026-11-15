@@ -348,7 +348,7 @@
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
 
   <!-- ========================================================= -->
-  <!-- GATEWAY LANDING SCREEN (SPLIT LEFT LEAF / RIGHT TITLE)    -->
+  <!-- GATEWAY LANDING SCREEN                                    -->
   <!-- ========================================================= -->
   <section id="gateway-screen" class="relative z-30 min-h-screen flex flex-col justify-between px-4 sm:px-8 lg:px-14 py-6 view-transition">
 
@@ -449,7 +449,7 @@
         </div>
       </div>
 
-      <!-- RIGHT COLUMN: TITLE WITH REPEATING CYBER-PLANT GROWTH + SUBTITLE + CTA -->
+      <!-- RIGHT COLUMN: TITLE + CYBER-PLANT GROWTH + SUBTITLE + CTA -->
       <div class="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
         <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full hud-card mb-6">
           <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_10px_#39ff14]"></span>
@@ -814,7 +814,15 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="flex flex-wrap items-center gap-2">
+            <button
+              type="button"
+              onclick="window.clearAllBankData()"
+              class="px-3.5 py-2 rounded-xl bg-red-500/15 border border-red-400/35 soft-interactive font-mono text-[11px] text-red-400 cursor-pointer"
+              title="Kosongkan seluruh isi Bank Konten"
+            >
+              🗑 KOSONGKAN SEMUA
+            </button>
             <button
               type="button"
               onclick="window.syncFromSupabase(true)"
@@ -1173,43 +1181,14 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- CORE SCRIPT (ANTI-OVERWRITE CLOUD SYNC ENGINE)            -->
+  <!-- CORE SCRIPT (TRUE EMPTY INITIALIZATION + CLOUD SYNC)      -->
   <!-- ========================================================= -->
   <script>
     (function () {
       const DEFAULT_SB_URL = 'https://cjvuwebpeoqzmrbjsjas.supabase.co';
       const DEFAULT_SB_KEY = 'sb_publishable_Jd5R0k7PFrLqHppW7q-hww_K4MxcduE';
       const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JGe5se4ouLX0V5Avk5afzQsMFEgqwZzm5wyltkhoFdzg';
-      const STORAGE_KEY = 'tlb_content_bank_v3';
-
-      const SEED_DATA = [
-        {
-          id: 'TLB-001',
-          target_date: '20-11-2026',
-          pillar: 'Habit Systems',
-          platform: 'Instagram',
-          format: 'Carousel',
-          hook: 'Jangan Mengandalkan Motivasi untuk Membangun Kebiasaan',
-          script: 'Slide 1: Hook — Jangan mengandalkan motivasi.\nSlide 2: Masalah — Motivasi naik turun saat lelah.\nSlide 3: Solusi 1 — Mulai dari aturan 2 menit.\nSlide 4: Solusi 2 — Desain pemicu visual di lingkungan.\nSlide 5: Closing & CTA.',
-          full_script: '[SLIDE 1 - COVER]\nJangan mengandalkan motivasi untuk membangun kebiasaan.\n\n[SLIDE 2 - REALITA]\nMotivasi itu sifatnya emosional. Hari ini tinggi, besok hilang saat kamu pulang dalam keadaan lelah.\n\n[SLIDE 3 - ATURAN 2 MENIT]\nPerkecil kebiasaan barumu sampai terasa terlalu mudah untuk ditolak. Bukan baca 30 halaman, tapi baca 1 halaman.\n\n[SLIDE 4 - DESAIN LINGKUNGAN]\nLetakkan pemicu visual di tempat yang langsung terlihat. Taruh buku di atas bantal, siapkan botol minum di meja kerja.\n\n[SLIDE 5 - CLOSING]\nSistem yang baik mengalahkan niat yang kuat. Simpan panduan ini!',
-          cta: 'Simpan sebagai panduan dan bagikan kepada teman yang sedang membangun kebiasaan baik.',
-          status: 'Scripting',
-          notes: ''
-        },
-        {
-          id: 'TLB-002',
-          target_date: '22-11-2026',
-          pillar: 'Mindset & Psikologi',
-          platform: 'TikTok',
-          format: 'Video Pendek 3-60s',
-          hook: 'Kamu Tidak Harus Mengubah Seluruh Hidup dalam Satu Malam',
-          script: '0-5s: Hook perubahan bertahap.\n5-20s: Masalah target terlalu ekstrem di hari pertama.\n20-45s: Fokus satu kebiasaan kecil sampai jadi identitas.\n45-60s: Closing arah lebih penting dari kecepatan.',
-          full_script: '(00:00 - 00:05) [Tatap kamera tenang]\n"Kamu tidak harus mengubah seluruh hidupmu dalam satu malam."\n\n(00:05 - 00:20) [B-roll jurnal / kopi]\n"Banyak dari kita berhenti di minggu pertama bukan karena malas, tapi karena memaksa berubah 180 derajat sekaligus."\n\n(00:20 - 00:45) [Kembali ke kamera]\n"Pilih satu kebiasaan kecil yang saking ringannya kamu hampir tidak punya alasan untuk menolaknya. Lakukan itu sampai menjadi bagian dari identitasmu."\n\n(00:45 - 00:55) [Closing]\n"Fokus pada arah langkahmu, bukan kecepatannya. Kebiasaan kecil apa yang ingin kamu mulai hari ini?"',
-          cta: 'Kebiasaan kecil apa yang ingin kamu mulai hari ini? Tulis di komentar.',
-          status: 'Ide Mentah',
-          notes: ''
-        }
-      ];
+      const STORAGE_KEY = 'tlb_content_bank_clean_v1';
 
       let contentBank = [];
       let currentEngineMode = 'A';
@@ -1302,13 +1281,13 @@
 
       function loadLocalBank() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tlb_content_bank_v2');
+          const raw = localStorage.getItem(STORAGE_KEY);
           if (raw) {
             const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            if (Array.isArray(parsed)) return parsed;
           }
         } catch (e) {}
-        return [...SEED_DATA];
+        return [];
       }
 
       function normalizeDateDisplay(dateStr) {
@@ -1336,7 +1315,7 @@
         };
       }
 
-      // SAFE TWO-WAY SYNC: Never wipes local data if cloud is empty or unreachable
+      // CLOUD IS SOURCE OF TRUTH: Never injects dummy data when empty
       window.syncFromSupabase = async function (notify = false) {
         contentBank = loadLocalBank();
         renderAll();
@@ -1354,47 +1333,29 @@
 
           if (error) throw error;
 
-          if (Array.isArray(data) && data.length > 0) {
-            // Merge cloud & local items safely by ID (cloud wins for matching IDs, local-only items are preserved & pushed up)
-            const cloudMap = new Map();
-            data.forEach(row => {
-              cloudMap.set(row.id, {
-                id: row.id,
-                target_date: normalizeDateDisplay(row.target_date),
-                pillar: row.pillar || 'Habit Systems',
-                platform: row.platform || 'TikTok',
-                format: row.format || 'Video Pendek 3-60s',
-                hook: row.hook || '',
-                script: row.script || '',
-                full_script: row.full_script || row.script || '',
-                cta: row.cta || '',
-                status: row.status || 'Ide Mentah',
-                notes: row.notes || ''
-              });
-            });
-
-            const localOnlyItems = contentBank.filter(item => !cloudMap.has(item.id));
-            if (localOnlyItems.length > 0) {
-              await supabaseClient.from('bank_konten').upsert(localOnlyItems.map(toCloudRow));
-              localOnlyItems.forEach(item => cloudMap.set(item.id, item));
-            }
-
-            contentBank = Array.from(cloudMap.values()).sort((a, b) => a.id.localeCompare(b.id));
+          if (Array.isArray(data)) {
+            contentBank = data.map(row => ({
+              id: row.id,
+              target_date: normalizeDateDisplay(row.target_date),
+              pillar: row.pillar || 'Habit Systems',
+              platform: row.platform || 'TikTok',
+              format: row.format || 'Video Pendek 3-60s',
+              hook: row.hook || '',
+              script: row.script || '',
+              full_script: row.full_script || row.script || '',
+              cta: row.cta || '',
+              status: row.status || 'Ide Mentah',
+              notes: row.notes || ''
+            }));
             saveLocalBank();
             renderAll();
-          } else if (contentBank.length > 0) {
-            // Cloud table is empty: automatically seed/upload current local bank to Supabase
-            const { error: seedErr } = await supabaseClient
-              .from('bank_konten')
-              .upsert(contentBank.map(toCloudRow));
-            if (seedErr) throw seedErr;
           }
 
           updateSyncIndicator(true, 'SUPABASE SYNCED');
-          if (notify) showToast('✓ Sinkronisasi Supabase berhasil & aman');
+          if (notify) showToast('✓ Sinkronisasi Supabase selesai');
         } catch (err) {
           updateSyncIndicator(false, 'CLOUD ERROR');
-          if (notify) showToast(`Gagal sync Supabase: ${err.message || 'Cek SQL/RLS'}`, 'error');
+          if (notify) showToast(`Gagal sync Supabase: ${err.message || 'Cek koneksi'}`, 'error');
         }
       };
 
@@ -1407,7 +1368,7 @@
           updateSyncIndicator(true, 'SUPABASE SYNCED');
         } catch (err) {
           updateSyncIndicator(false, 'CLOUD ERROR');
-          showToast(`Tersimpan lokal, gagal ke cloud: ${err.message || 'Cek SQL Supabase'}`, 'error');
+          showToast(`Tersimpan lokal, gagal ke cloud: ${err.message || 'Cek Supabase'}`, 'error');
         }
       }
 
@@ -1421,6 +1382,32 @@
           showToast(`Gagal hapus di cloud: ${err.message}`, 'error');
         }
       }
+
+      window.clearAllBankData = async function () {
+        if (contentBank.length === 0) {
+          showToast('Bank Konten sudah kosong');
+          return;
+        }
+        const idsToDelete = contentBank.map(item => item.id);
+        contentBank = [];
+        saveLocalBank();
+        renderAll();
+
+        if (supabaseClient && idsToDelete.length > 0) {
+          try {
+            const { error } = await supabaseClient
+              .from('bank_konten')
+              .delete()
+              .in('id', idsToDelete);
+            if (error) throw error;
+            updateSyncIndicator(true, 'SUPABASE SYNCED');
+          } catch (err) {
+            showToast(`Gagal hapus massal di cloud: ${err.message}`, 'error');
+            return;
+          }
+        }
+        showToast('✓ Seluruh isi Bank Konten dikosongkan');
+      };
 
       window.enterWorkspace = function () {
         resetScrollToTop();
@@ -1484,7 +1471,7 @@
         if (pillarContainer) {
           const entries = Object.entries(pillarCounts);
           pillarContainer.innerHTML = entries.length === 0
-            ? '<p class="text-xs opacity-50">Belum ada data konten.</p>'
+            ? '<p class="text-xs opacity-50 font-mono">Belum ada data konten. Mulai buat unit pertama di Core Engine.</p>'
             : entries.map(([pillar, count]) => {
                 const pct = Math.round((count / Math.max(total, 1)) * 100);
                 return `
@@ -1507,7 +1494,7 @@
         if (platContainer) {
           const entries = Object.entries(platCounts);
           platContainer.innerHTML = entries.length === 0
-            ? '<p class="text-xs opacity-50">Belum ada data platform.</p>'
+            ? '<p class="text-xs opacity-50 font-mono">Belum ada data platform.</p>'
             : entries.map(([plat, count]) => {
                 const pct = Math.round((count / Math.max(total, 1)) * 100);
                 return `
@@ -1528,7 +1515,7 @@
         if (upcomingEl) {
           const sorted = [...contentBank].slice(0, 5);
           upcomingEl.innerHTML = sorted.length === 0
-            ? '<p class="py-6 text-center text-xs opacity-50">Belum ada antrian konten.</p>'
+            ? '<p class="py-6 text-center text-xs opacity-50 font-mono">Bank Konten masih kosong. Klik "+ BUAT KONTEN BARU" untuk memulai.</p>'
             : sorted.map(item => `
                 <div class="py-3.5 flex flex-wrap items-center justify-between gap-3 transition-colors duration-300 hover:bg-emerald-500/5 px-2 rounded-xl">
                   <div class="flex items-center gap-3 min-w-0">
@@ -1568,7 +1555,7 @@
         });
 
         if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-10 text-center opacity-50 font-mono text-xs">Tidak ada unit konten yang cocok.</td></tr>`;
+          tbody.innerHTML = `<tr><td colspan="7" class="py-12 text-center opacity-50 font-mono text-xs">Bank Konten kosong. Klik "+ TAMBAH UNIT" untuk membuat data konten pertama.</td></tr>`;
           return;
         }
 
