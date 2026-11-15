@@ -3,21 +3,24 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TUMBUH LEBIH BAIK — Command HUD</title>
+  <title>TUMBUH LEBIH BAIK // Content Command HUD</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg-obsidian: #030504;
       --emerald-deep: #064e3b;
       --emerald-mid: #10b981;
-      --lime-bright: #a3e635;
+      --mint-neon: #6ee7b7;
+      --pure-white: #ffffff;
     }
 
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
       background-color: var(--bg-obsidian);
@@ -27,407 +30,44 @@
       margin: 0;
     }
 
-    .font-display { font-family: 'Space Grotesk', sans-serif; }
-    .font-mono-tech { font-family: 'JetBrains Mono', monospace; }
-
-    /* Gaussian Blur Ambient Orbs */
-    .ambient-orb-1 {
-      position: fixed;
-      top: -140px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 780px;
-      height: 420px;
-      background: radial-gradient(circle, rgba(16, 185, 129, 0.22) 0%, rgba(6, 78, 59, 0.14) 45%, transparent 72%);
-      filter: blur(75px);
-      pointer-events: none;
-      z-index: 0;
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
     }
 
-    .ambient-orb-2 {
-      position: fixed;
-      bottom: -160px;
-      right: -100px;
-      width: 560px;
-      height: 460px;
-      background: radial-gradient(circle, rgba(163, 230, 53, 0.12) 0%, rgba(6, 78, 59, 0.16) 50%, transparent 75%);
-      filter: blur(85px);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Orbital Glow Ring (Ditempatkan tinggi agar bebas tabrakan teks) */
-    .orbital-arc {
-      position: absolute;
-      top: -430px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 980px;
-      height: 540px;
-      border-radius: 50%;
-      border-bottom: 2px solid rgba(255, 255, 255, 0.85);
-      box-shadow:
-        0 12px 45px rgba(163, 230, 53, 0.45),
-        0 25px 95px rgba(16, 185, 129, 0.35),
-        inset 0 -10px 35px rgba(163, 230, 53, 0.25);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    .orbital-inner-flare {
-      position: absolute;
-      top: -395px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 740px;
-      height: 475px;
-      border-radius: 50%;
-      border-bottom: 1px solid rgba(163, 230, 53, 0.45);
-      box-shadow: 0 8px 30px rgba(16, 185, 129, 0.25);
-      pointer-events: none;
-      z-index: 1;
-    }
-
-    /* Tech Grid Background */
+    /* Ambient Gaussian Blur Layers - Strictly non-interactive */
+    .gaussian-orb-deep,
+    .gaussian-orb-mint,
+    .orbital-arc,
+    .orbital-inner-flare,
     .tech-grid {
-      background-image:
-        linear-gradient(to right, rgba(16, 185, 129, 0.045) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(16, 185, 129, 0.045) 1px, transparent 1px);
-      background-size: 44px 44px;
+      pointer-events: none !important;
+      user-select: none !important;
     }
 
-    /* Blinking HUD Tech Nodes */
-    @keyframes hudBlink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.2; transform: scale(0.82); }
-    }
-    @keyframes hudScan {
-      0%, 100% { opacity: 0.35; }
-      50% { opacity: 0.95; }
-    }
-    .blink-fast { animation: hudBlink 1.6s infinite ease-in-out; }
-    .blink-slow { animation: hudBlink 2.8s infinite ease-in-out; }
-    .scan-pulse { animation: hudScan 3.2s infinite ease-in-out; }
-
-    /* Glass Panels */
-    .hud-glass {
-      background: rgba(8, 14, 11, 0.72);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(16, 185, 129, 0.18);
+    .gaussian-orb-deep {
+      position: fixed;
+      width: 520px;
+      height: 520px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(6, 78, 59, 0.55) 0%, rgba(6, 78, 59, 0) 72%);
+      filter: blur(85px);
+      z-index: 0;
     }
 
-    .hud-glass-strong {
-      background: rgba(6, 11, 9, 0.88);
-      backdrop-filter: blur(26px);
-      -webkit-backdrop-filter: blur(26px);
-      border: 1px solid rgba(163, 230, 53, 0.24);
+    .gaussian-orb-mint {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(110, 231, 183, 0.22) 0%, rgba(16, 185, 129, 0) 70%);
+      filter: blur(90px);
+      z-index: 0;
     }
 
-    /* Gateway CTA Glow Button */
-    .btn-gateway-glow {
-      background: linear-gradient(135deg, #ffffff 0%, #ecfccb 55%, #a3e635 100%);
-      color: #030504;
-      box-shadow:
-        0 0 28px rgba(163, 230, 53, 0.55),
-        0 0 65px rgba(16, 185, 129, 0.32);
-      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .btn-gateway-glow:hover {
-      transform: translateY(-2px) scale(1.02);
-      box-shadow:
-        0 0 38px rgba(163, 230, 53, 0.8),
-        0 0 85px rgba(16, 185, 129, 0.5);
-    }
-
-    /* Custom Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #030504; }
-    ::-webkit-scrollbar-thumb { background: #065f46; border-radius: 999px; }
-    ::-webkit-scrollbar-thumb:hover { background: #10b981; }
-  </style>
-</head>
-<body class="tech-grid min-h-screen relative selection:bg-lime-400 selection:text-black">
-
-  <!-- Gaussian Ambient Layers -->
-  <div class="ambient-orb-1"></div>
-  <div class="ambient-orb-2"></div>
-
-  <!-- =========================================================
-       VIEW 1: GATEWAY LANDING PAGE
-  ========================================================== -->
-  <section id="gateway-view" class="relative min-h-screen flex flex-col justify-between overflow-hidden px-4 sm:px-8 py-6 z-10">
-    <!-- Orbital Light Arc -->
-    <div class="orbital-arc"></div>
-    <div class="orbital-inner-flare"></div>
-
-    <!-- Top Floating Pill Navbar -->
-    <header class="relative z-20 max-w-5xl w-full mx-auto">
-      <div class="hud-glass rounded-full px-5 py-2.5 flex items-center justify-between border border-emerald-500/25 shadow-lg shadow-black/50">
-        <div class="flex items-center gap-2.5">
-          <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast shadow-[0_0_10px_#a3e635]"></span>
-          <span class="font-display font-bold tracking-[0.22em] text-xs sm:text-sm text-white">TLB // HUD</span>
-        </div>
-        <div class="hidden md:flex items-center gap-6 text-[11px] font-mono-tech tracking-widest text-emerald-200/70">
-          <span class="flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-slow"></span> CLOUD SYNC</span>
-          <span>GEMINI CORE</span>
-          <span>V2.6 OBSIDIAN</span>
-        </div>
-        <button type="button" onclick="enterWorkspace()" class="px-4 py-1.5 rounded-full bg-white text-black font-display font-bold text-[11px] tracking-wider hover:bg-lime-300 transition cursor-pointer">
-          LAUNCH
-        </button>
-      </div>
-    </header>
-
-    <!-- Center Hero Content (Dengan jarak aman dari lengkungan orbit) -->
-    <main class="relative z-20 max-w-5xl mx-auto text-center pt-28 sm:pt-32 pb-10 flex flex-col items-center">
-      <!-- Status Badge -->
-      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full hud-glass border border-lime-400/30 mb-7">
-        <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast shadow-[0_0_10px_#a3e635]"></span>
-        <span class="font-mono-tech text-[10px] sm:text-xs tracking-[0.28em] text-lime-300 uppercase">CONTENT COMMAND INTERFACE • ACTIVE</span>
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-slow"></span>
-      </div>
-
-      <!-- Wide Futuristic Title -->
-      <h1 class="font-display font-bold text-3xl sm:text-5xl md:text-6xl tracking-[0.26em] sm:tracking-[0.34em] text-white uppercase leading-tight mb-5 drop-shadow-[0_0_25px_rgba(16,185,129,0.28)]">
-        TUMBUH<br class="sm:hidden" /> LEBIH BAIK
-      </h1>
-
-      <p class="font-mono-tech text-xs sm:text-sm tracking-[0.2em] text-emerald-100/75 uppercase max-w-xl mb-10">
-        AUTONOMOUS CONTENT BANK &amp; AI SCRIPT ENGINE
-      </p>
-
-      <!-- Main Thick Glow CTA Button -->
-      <button type="button" onclick="enterWorkspace()" class="btn-gateway-glow px-10 py-4 rounded-full font-display font-extrabold text-sm sm:text-base tracking-[0.2em] uppercase flex items-center gap-3 cursor-pointer">
-        <span>MASUK KE PROJECT</span>
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-        </svg>
-      </button>
-
-      <!-- Tech Telemetry Strip -->
-      <div class="mt-12 grid grid-cols-3 gap-4 sm:gap-10 px-6 py-3 rounded-2xl hud-glass border border-emerald-500/20 text-left">
-        <div>
-          <div class="flex items-center gap-1.5 text-[10px] font-mono-tech text-emerald-400/80">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime-400 blink-fast"></span> NODE 01
-          </div>
-          <div class="text-xs font-semibold text-white mt-0.5">TELEMETRY HUD</div>
-        </div>
-        <div>
-          <div class="flex items-center gap-1.5 text-[10px] font-mono-tech text-emerald-400/80">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-slow"></span> NODE 02
-          </div>
-          <div class="text-xs font-semibold text-white mt-0.5">BANK DATABASE</div>
-        </div>
-        <div>
-          <div class="flex items-center gap-1.5 text-[10px] font-mono-tech text-emerald-400/80">
-            <span class="w-1.5 h-1.5 rounded-full bg-lime-400 blink-fast"></span> NODE 03
-          </div>
-          <div class="text-xs font-semibold text-white mt-0.5">CORE AI ENGINE</div>
-        </div>
-      </div>
-    </main>
-
-    <!-- Bottom Minimal Status -->
-    <footer class="relative z-20 max-w-5xl w-full mx-auto flex items-center justify-between text-[10px] font-mono-tech tracking-widest text-emerald-300/50 border-t border-emerald-900/40 pt-4">
-      <span>PROJECT // TLB-SYSTEM-2026</span>
-      <span id="db-connection-badge" class="flex items-center gap-2 text-lime-300/80">
-        <span class="w-1.5 h-1.5 rounded-full bg-lime-400 blink-fast"></span> INITIALIZING LINK...
-      </span>
-    </footer>
-  </section>
-
-  <!-- =========================================================
-       VIEW 2: WORKSPACE HUD (3 MENU UTAMA)
-  ========================================================== -->
-  <section id="workspace-view" class="hidden relative min-h-screen flex flex-col z-10">
-    <!-- Top Workspace Navigation -->
-    <header class="sticky top-0 z-30 hud-glass-strong border-b border-emerald-500/20 px-4 sm:px-8 py-3.5">
-      <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
-        <!-- Brand & Back -->
-        <div class="flex items-center gap-3">
-          <button type="button" onclick="exitWorkspace()" title="Kembali ke Gateway" class="p-2 rounded-xl border border-emerald-500/25 text-emerald-300 hover:bg-emerald-950/60 hover:text-white transition cursor-pointer">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-          </button>
-          <div>
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast shadow-[0_0_8px_#a3e635]"></span>
-              <span class="font-display font-bold text-sm sm:text-base tracking-[0.18em] text-white">TUMBUH LEBIH BAIK</span>
-            </div>
-            <p id="sync-status-text" class="font-mono-tech text-[10px] tracking-widest text-emerald-400/80">SYNCED // CLOUD DATABASE</p>
-          </div>
-        </div>
-
-        <!-- 3 Main HUD Tabs -->
-        <nav class="flex items-center gap-1.5 sm:gap-2 bg-black/70 p-1.5 rounded-2xl border border-emerald-500/25">
-          <button type="button" id="nav-dashboard" onclick="switchTab('dashboard')" class="px-3.5 sm:px-5 py-2 rounded-xl font-mono-tech text-xs font-bold tracking-wider transition cursor-pointer bg-gradient-to-r from-emerald-600 to-lime-500 text-black shadow-[0_0_18px_rgba(163,230,53,0.35)]">
-            01 // DASHBOARD
-          </button>
-          <button type="button" id="nav-bank" onclick="switchTab('bank')" class="px-3.5 sm:px-5 py-2 rounded-xl font-mono-tech text-xs font-bold tracking-wider transition cursor-pointer text-emerald-200/75 hover:text-white hover:bg-emerald-950/50">
-            02 // BANK KONTEN
-          </button>
-          <button type="button" id="nav-engine" onclick="switchTab('engine')" class="px-3.5 sm:px-5 py-2 rounded-xl font-mono-tech text-xs font-bold tracking-wider transition cursor-pointer text-emerald-200/75 hover:text-white hover:bg-emerald-950/50">
-            03 // CORE ENGINE
-          </button>
-        </nav>
-      </div>
-    </header>
-
-    <!-- Main Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-7">
-
-      <!-- =====================================================
-           TAB 01: DASHBOARD TELEMETRY & ANALYTICS
-      ====================================================== -->
-      <div id="tab-dashboard" class="space-y-6">
-        <!-- Page Header -->
-        <div class="flex flex-wrap items-end justify-between gap-4 border-b border-emerald-500/20 pb-4">
-          <div>
-            <div class="flex items-center gap-2 font-mono-tech text-[11px] tracking-[0.25em] text-lime-400 uppercase mb-1">
-              <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast"></span> MODULE 01 // REALTIME TELEMETRY
-            </div>
-            <h2 class="font-display font-extrabold text-2xl sm:text-3xl tracking-wider text-white uppercase">
-              DASHBOARD TELEMETRY &amp; ANALYTICS
-            </h2>
-          </div>
-          <button type="button" onclick="switchTab('engine')" class="px-4 py-2.5 rounded-xl bg-lime-400 hover:bg-lime-300 text-black font-mono-tech font-bold text-xs tracking-wider shadow-[0_0_20px_rgba(163,230,53,0.35)] transition cursor-pointer">
-            + INPUT VIA CORE ENGINE
-          </button>
-        </div>
-
-        <!-- 3-Zone KPI Layout: TOTAL UNIT (Left) | 4 PIPELINE STATS (Center) | SUDAH TAYANG (Right) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-          <!-- Left Big Card: TOTAL UNIT -->
-          <div class="lg:col-span-3 hud-glass-strong rounded-2xl p-6 border border-emerald-400/35 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-emerald-500/15 blur-xl"></div>
-            <div class="flex items-center justify-between">
-              <span class="font-mono-tech text-xs font-bold tracking-[0.2em] text-emerald-300 uppercase">TOTAL UNIT</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-slow"></span>
-            </div>
-            <div id="stat-total" class="font-display font-extrabold text-5xl sm:text-6xl text-white my-4 tracking-tight">0</div>
-            <div class="font-mono-tech text-[10px] tracking-widest text-emerald-300/70 uppercase">SEMUA IDE &amp; PRODUKSI</div>
-          </div>
-
-          <!-- Center 4 Pipeline Cards -->
-          <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div class="hud-glass rounded-2xl p-4 border border-emerald-500/20 flex flex-col justify-between">
-              <span class="font-mono-tech text-[10px] tracking-widest text-emerald-200/70 uppercase">IDE MENTAH</span>
-              <div id="stat-ide" class="font-display font-bold text-3xl text-white my-3">0</div>
-              <span class="font-mono-tech text-[9px] text-emerald-400/70">STAGE 01</span>
-            </div>
-            <div class="hud-glass rounded-2xl p-4 border border-emerald-500/20 flex flex-col justify-between">
-              <span class="font-mono-tech text-[10px] tracking-widest text-emerald-200/70 uppercase">SCRIPTING</span>
-              <div id="stat-scripting" class="font-display font-bold text-3xl text-lime-300 my-3">0</div>
-              <span class="font-mono-tech text-[9px] text-lime-400/70">STAGE 02</span>
-            </div>
-            <div class="hud-glass rounded-2xl p-4 border border-emerald-500/20 flex flex-col justify-between">
-              <span class="font-mono-tech text-[10px] tracking-widest text-emerald-200/70 uppercase">EDITING</span>
-              <div id="stat-editing" class="font-display font-bold text-3xl text-emerald-300 my-3">0</div>
-              <span class="font-mono-tech text-[9px] text-emerald-400/70">STAGE 03</span>
-            </div>
-            <div class="hud-glass rounded-2xl p-4 border border-emerald-500/20 flex flex-col justify-between">
-              <span class="font-mono-tech text-[10px] tracking-widest text-emerald-200/70 uppercase">SIAP UPLOAD</span>
-              <div id="stat-ready" class="font-display font-bold text-3xl text-white my-3">0</div>
-              <span class="font-mono-tech text-[9px] text-emerald-400/70">STAGE 04</span>
-            </div>
-          </div>
-
-          <!-- Right Big Card: SUDAH TAYANG -->
-          <div class="lg:col-span-3 hud-glass-strong rounded-2xl p-6 border border-lime-400/40 flex flex-col justify-between relative overflow-hidden">
-            <div class="absolute -right-6 -top-6 w-24 h-24 rounded-full bg-lime-400/20 blur-xl"></div>
-            <div class="flex items-center justify-between">
-              <span class="font-mono-tech text-xs font-bold tracking-[0.2em] text-lime-300 uppercase">SUDAH TAYANG</span>
-              <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast shadow-[0_0_8px_#a3e635]"></span>
-            </div>
-            <div id="stat-published" class="font-display font-extrabold text-5xl sm:text-6xl text-lime-300 my-4 tracking-tight">0</div>
-            <div class="font-mono-tech text-[10px] tracking-widest text-lime-200/70 uppercase">PUBLISHED CONTENT</div>
-          </div>
-        </div>
-
-        <!-- 1 Row, 2 Columns: Distribusi Pilar & Channel Platform -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
-          <!-- Column 1: Distribusi Pilar -->
-          <div class="hud-glass rounded-2xl p-5 border border-emerald-500/25">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-display font-bold text-sm tracking-[0.18em] text-white uppercase">DISTRIBUSI PILAR KONTEN</h3>
-              <span class="font-mono-tech text-[10px] text-emerald-400">4 CORE PILLARS</span>
-            </div>
-            <div id="pillar-bars" class="space-y-3.5"></div>
-          </div>
-
-          <!-- Column 2: Channel Platform -->
-          <div class="hud-glass rounded-2xl p-5 border border-emerald-500/25">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-display font-bold text-sm tracking-[0.18em] text-white uppercase">CHANNEL PLATFORM</h3>
-              <span class="font-mono-tech text-[10px] text-lime-400">DISTRIBUTION</span>
-            </div>
-            <div id="platform-bars" class="space-y-4"></div>
-          </div>
-        </div>
-
-        <!-- Upcoming Schedule Queue (Sorted by Target Upload Date) -->
-        <div class="hud-glass rounded-2xl p-5 border border-emerald-500/25">
-          <div class="flex items-center justify-between mb-4">
-            <div class="flex items-center gap-2">
-              <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast"></span>
-              <h3 class="font-display font-bold text-sm tracking-[0.18em] text-white uppercase">ANTRIAN KONTEN TERBARU (URUT TANGGAL UPLOAD)</h3>
-            </div>
-            <button type="button" onclick="switchTab('bank')" class="font-mono-tech text-[11px] text-lime-300 hover:underline cursor-pointer">LIHAT SEMUA &rarr;</button>
-          </div>
-          <div id="upcoming-queue" class="grid grid-cols-1 md:grid-cols-3 gap-3.5"></div>
-        </div>
-      </div>
-
-      <!-- =====================================================
-           TAB 02: BANK KONTEN DATABASE
-      ====================================================== -->
-      <div id="tab-bank" class="hidden space-y-5">
-        <div class="flex flex-wrap items-end justify-between gap-4 border-b border-emerald-500/20 pb-4">
-          <div>
-            <div class="flex items-center gap-2 font-mono-tech text-[11px] tracking-[0.25em] text-lime-400 uppercase mb-1">
-              <span class="w-2 h-2 rounded-full bg-lime-400 blink-fast"></span> MODULE 02 // CENTRAL REPOSITORY
-            </div>
-            <h2 class="font-display font-extrabold text-2xl sm:text-3xl tracking-wider text-white uppercase">
-              BANK KONTEN DATABASE
-            </h2>
-          </div>
-
-          <!-- Filters -->
-          <div class="flex flex-wrap items-center gap-2">
-            <input type="text" id="filter-search" oninput="renderBankTable()" placeholder="Cari ID / Hook..." class="px-3.5 py-2 rounded-xl bg-black/80 border border-emerald-500/30 text-xs text-white placeholder-emerald-300/40 focus:outline-none focus:border-lime-400" />
-            <select id="filter-platform" onchange="renderBankTable()" class="px-3 py-2 rounded-xl bg-black/80 border border-emerald-500/30 text-xs text-emerald-100 focus:outline-none focus:border-lime-400">
-              <option value="ALL">Semua Platform</option>
-              <option value="TikTok">TikTok</option>
-              <option value="Instagram">Instagram</option>
-            </select>
-            <select id="filter-pillar" onchange="renderBankTable()" class="px-3 py-2 rounded-xl bg-black/80 border border-emerald-500/30 text-xs text-emerald-100 focus:outline-none focus:border-lime-400">
-              <option value="ALL">Semua Pilar</option>
-              <option value="Habit Systems">Habit Systems</option>
-              <option value="Mindset & Psikologi">Mindset &amp; Psikologi</option>
-              <option value="Daily Routine & Audit">Daily Routine &amp; Audit</option>
-              <option value="Story & Refleksi">Story &amp; Refleksi</option>
-            </select>
-            <select id="filter-status" onchange="renderBankTable()" class="px-3 py-2 rounded-xl bg-black/80 border border-emerald-500/30 text-xs text-emerald-100 focus:outline-none focus:border-lime-400">
-              <option value="ALL">Semua Status</option>
-              <option value="Ide Mentah">Ide Mentah</option>
-              <option value="Scripting">Scripting</option>
-              <option value="Desain / Editing">Desain / Editing</option>
-              <option value="Siap Upload">Siap Upload</option>
-              <option value="Sudah Tayang">Sudah Tayang</option>
-            </select>
-          </div>
-        </div>
-
-        <!-- Database Table -->
-        <div class="hud-glass-strong rounded-2xl border border-emerald-500/30 overflow-hidden shadow-2xl">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="bg-emerald-950/70 border-b border-emerald-500/35 font-mono-tech text-[11px] font-bold tracking-wider text-lime-300 uppercase">
-                  <th class="py-3.5 px-3.5 border-r border-emerald-500/15">ID</th>
-                  <th class="py-3.5 px-3.5 border-r border-emerald-500/15">TARGET UPLOAD</th>
-                  <th class="py-3.5 px-3.5 border-r border-emerald-500/15">PILAR</th>
-                  <th class="py-3.5 px-3.5 border-r border-emerald-500/15">PLATFORM</th>
-                  <th class="py-3.5 px-3.5 border-r border-emerald-500/15">FORMAT</th>
+    /* Subtle Tech Grid */
+    .tech-grid {
+      position: fixed;
+      inset: 0;
+      background-image: 
+        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(16, 185, 129, 0.04) 1px, transparent 1
