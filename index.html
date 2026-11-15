@@ -11,7 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      /* DARK MODE (Hitam Obsidian + Hijau Tua ke Hijau Muda Neon) */
       --bg-main: #020503;
       --bg-surface: rgba(5, 16, 11, 0.78);
       --bg-card: rgba(7, 22, 15, 0.74);
@@ -31,7 +30,6 @@
     }
 
     html.light {
-      /* LIGHT MODE (Putih Bersih + Hijau Tua Zamrud ke Hijau Muda Segar) */
       --bg-main: #f4faf6;
       --bg-surface: rgba(255, 255, 255, 0.88);
       --bg-card: rgba(255, 255, 255, 0.84);
@@ -50,13 +48,8 @@
       --orb-bright-op: 0.25;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html, body {
-      scroll-behavior: auto;
-    }
+    * { box-sizing: border-box; }
+    html, body { scroll-behavior: auto; }
 
     body {
       background-color: var(--bg-main);
@@ -67,21 +60,14 @@
       transition: background-color 0.55s cubic-bezier(0.22, 1, 0.36, 1), color 0.55s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .font-display {
-      font-family: 'Orbitron', sans-serif;
-    }
+    .font-display { font-family: 'Orbitron', sans-serif; }
+    .font-mono { font-family: 'JetBrains Mono', monospace; }
 
-    .font-mono {
-      font-family: 'JetBrains Mono', monospace;
-    }
-
-    /* Non-interactive Ambient Effects */
     .ambient-layer {
       pointer-events: none !important;
       user-select: none !important;
     }
 
-    /* Gaussian Blur Orbs */
     .gaussian-orb-deep {
       position: fixed;
       width: 600px;
@@ -106,7 +92,6 @@
       z-index: 0;
     }
 
-    /* Futuristic Tech Grid */
     .tech-grid {
       position: fixed;
       inset: 0;
@@ -118,40 +103,19 @@
       z-index: 0;
     }
 
-    /* Soft Page & View Entrance Animations */
     @keyframes softViewEnter {
-      0% {
-        opacity: 0;
-        transform: translateY(14px) scale(0.992);
-        filter: blur(4px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        filter: blur(0);
-      }
+      0% { opacity: 0; transform: translateY(14px) scale(0.992); filter: blur(4px); }
+      100% { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
     }
 
     @keyframes softModalIn {
-      0% {
-        opacity: 0;
-        transform: translateY(18px) scale(0.96);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      0% { opacity: 0; transform: translateY(18px) scale(0.96); }
+      100% { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    .view-transition {
-      animation: softViewEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
+    .view-transition { animation: softViewEnter 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .modal-transition { animation: softModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
 
-    .modal-transition {
-      animation: softModalIn 0.4s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-    }
-
-    /* Glassmorphism HUD Surfaces */
     .hud-glass {
       background: var(--bg-surface);
       backdrop-filter: blur(24px);
@@ -179,7 +143,6 @@
       box-shadow: 0 8px 36px var(--glow-color);
     }
 
-    /* Soft Interactive Button Feel */
     .soft-interactive {
       transition:
         transform 0.32s cubic-bezier(0.22, 1, 0.36, 1),
@@ -190,13 +153,8 @@
         filter 0.35s ease;
     }
 
-    .soft-interactive:hover {
-      transform: translateY(-2px);
-    }
-
-    .soft-interactive:active {
-      transform: translateY(0px) scale(0.97);
-    }
+    .soft-interactive:hover { transform: translateY(-2px); }
+    .soft-interactive:active { transform: translateY(0px) scale(0.97); }
 
     .hud-input {
       background: var(--bg-input);
@@ -214,7 +172,6 @@
       box-shadow: 0 0 20px var(--glow-color);
     }
 
-    /* Rich Deep-Green to Bright-Green Gradient Text & Buttons */
     .text-cyber-green {
       background: linear-gradient(120deg, var(--green-mid) 0%, var(--green-bright) 55%, #a7ff83 100%);
       -webkit-background-clip: text;
@@ -246,13 +203,8 @@
       filter: brightness(1.06);
     }
 
-    .btn-cyber:active {
-      transform: translateY(0px) scale(0.97);
-    }
+    .btn-cyber:active { transform: translateY(0px) scale(0.97); }
 
-    /* ========================================================= */
-    /* REPEATING CYBER-VINE GROWTH -> "TUMBUH LEBIH BAIK" REVEAL */
-    /* ========================================================= */
     @keyframes vineStemGrow {
       0%   { stroke-dashoffset: 420; opacity: 0; }
       6%   { opacity: 1; }
@@ -287,31 +239,11 @@
     }
 
     @keyframes titleGrowthReveal {
-      0%, 34% {
-        opacity: 0;
-        transform: translateY(14px) scale(0.96);
-        filter: blur(8px);
-      }
-      46% {
-        opacity: 1;
-        transform: translateY(0px) scale(1);
-        filter: blur(0px);
-      }
-      84% {
-        opacity: 1;
-        transform: translateY(0px) scale(1);
-        filter: blur(0px);
-      }
-      95% {
-        opacity: 0;
-        transform: translateY(-8px) scale(0.98);
-        filter: blur(4px);
-      }
-      100% {
-        opacity: 0;
-        transform: translateY(14px) scale(0.96);
-        filter: blur(8px);
-      }
+      0%, 34% { opacity: 0; transform: translateY(14px) scale(0.96); filter: blur(8px); }
+      46% { opacity: 1; transform: translateY(0px) scale(1); filter: blur(0px); }
+      84% { opacity: 1; transform: translateY(0px) scale(1); filter: blur(0px); }
+      95% { opacity: 0; transform: translateY(-8px) scale(0.98); filter: blur(4px); }
+      100% { opacity: 0; transform: translateY(14px) scale(0.96); filter: blur(8px); }
     }
 
     .cyber-vine-path {
@@ -320,26 +252,11 @@
       animation: vineStemGrow 7.5s cubic-bezier(0.25, 1, 0.5, 1) infinite;
     }
 
-    .vine-bud-1 {
-      transform-origin: 95px 22px;
-      animation: vineLeafBud1 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-    }
+    .vine-bud-1 { transform-origin: 95px 22px; animation: vineLeafBud1 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+    .vine-bud-2 { transform-origin: 205px 18px; animation: vineLeafBud2 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+    .vine-bud-3 { transform-origin: 315px 20px; animation: vineLeafBud3 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
+    .tumbuh-title-reveal { animation: titleGrowthReveal 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite; }
 
-    .vine-bud-2 {
-      transform-origin: 205px 18px;
-      animation: vineLeafBud2 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-    }
-
-    .vine-bud-3 {
-      transform-origin: 315px 20px;
-      animation: vineLeafBud3 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-    }
-
-    .tumbuh-title-reveal {
-      animation: titleGrowthReveal 7.5s cubic-bezier(0.22, 1, 0.36, 1) infinite;
-    }
-
-    /* Multi-Frequency Tech Blinking Animations */
     @keyframes blinkRapid {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.18; transform: scale(0.8); }
@@ -350,7 +267,6 @@
       50% { opacity: 0.12; }
     }
 
-    /* Slow, Majestic, Futuristic Bio-Tech Leaf Animations */
     @keyframes leafMajesticFloat {
       0%, 100% { transform: translateY(0px) rotate(0deg); }
       50% { transform: translateY(-8px) rotate(1.1deg); }
@@ -400,26 +316,11 @@
       animation: circuitSlowFlow 8.5s linear infinite;
     }
 
-    .hud-ring-cw {
-      transform-origin: center;
-      animation: hudRotateSlow 40s linear infinite;
-    }
+    .hud-ring-cw { transform-origin: center; animation: hudRotateSlow 40s linear infinite; }
+    .hud-ring-ccw { transform-origin: center; animation: hudRotateReverseSlow 32s linear infinite; }
+    .leaf-scan-slow { animation: scanSlowBeam 6.2s infinite ease-in-out; }
+    .pulse-ring-slow { transform-origin: center; animation: pulseRingSlow 5.2s infinite ease-out; }
 
-    .hud-ring-ccw {
-      transform-origin: center;
-      animation: hudRotateReverseSlow 32s linear infinite;
-    }
-
-    .leaf-scan-slow {
-      animation: scanSlowBeam 6.2s infinite ease-in-out;
-    }
-
-    .pulse-ring-slow {
-      transform-origin: center;
-      animation: pulseRingSlow 5.2s infinite ease-out;
-    }
-
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 4px; }
@@ -466,7 +367,6 @@
           <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-5"></span>
         </div>
 
-        <!-- Dark / Light Mode Toggle Button -->
         <button
           type="button"
           onclick="window.toggleTheme()"
@@ -479,7 +379,7 @@
       </div>
     </div>
 
-    <!-- Split Two-Column Hero: Left = Large Cyber Leaf, Right = Title + Vine Growth + CTA -->
+    <!-- Split Two-Column Hero -->
     <div class="relative z-30 max-w-7xl w-full mx-auto my-auto py-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
 
       <!-- LEFT COLUMN: LARGE FUTURISTIC HOLOGRAPHIC AI BIO-TECH LEAF -->
@@ -504,21 +404,17 @@
               </linearGradient>
             </defs>
 
-            <!-- Outer Slowly Rotating Holographic Telemetry Rings -->
             <circle cx="130" cy="130" r="120" fill="none" stroke="url(#cyberLeafGrad)" stroke-width="1" stroke-dasharray="10 8 2 8" opacity="0.55" class="hud-ring-cw" />
             <circle cx="130" cy="130" r="104" fill="none" stroke="#00c853" stroke-width="1.2" stroke-dasharray="32 14" opacity="0.45" class="hud-ring-ccw" />
             <circle cx="130" cy="130" r="90" fill="none" stroke="#39ff14" stroke-width="1" class="pulse-ring-slow" />
 
-            <!-- Hexagonal Futuristic Frame Accents -->
             <polygon points="130,16 229,73 229,187 130,244 31,187 31,73" fill="none" stroke="#00c853" stroke-width="0.9" stroke-dasharray="4 6" opacity="0.42" />
 
-            <!-- Corner HUD Precision Brackets -->
             <path d="M 36 64 L 36 36 L 64 36" fill="none" stroke="#39ff14" stroke-width="2.2" class="blink-1" />
             <path d="M 224 64 L 224 36 L 196 36" fill="none" stroke="#39ff14" stroke-width="2.2" class="blink-2" />
             <path d="M 36 196 L 36 224 L 64 224" fill="none" stroke="#00c853" stroke-width="2.2" class="blink-4" />
             <path d="M 224 196 L 224 224 L 196 224" fill="none" stroke="#00c853" stroke-width="2.2" class="blink-5" />
 
-            <!-- Main Futuristic AI Leaf Outer Shell -->
             <path
               d="M 126 214 C 60 194, 44 122, 88 66 C 108 40, 145 32, 194 36 C 200 94, 188 158, 126 214 Z"
               fill="url(#leafGlassFill)"
@@ -526,7 +422,6 @@
               stroke-width="3"
             />
 
-            <!-- Secondary Inner Holographic Leaf Contour -->
             <path
               d="M 127 198 C 76 182, 64 124, 98 78 C 114 56, 143 50, 180 52 C 184 98, 174 150, 127 198 Z"
               fill="none"
@@ -536,14 +431,12 @@
               opacity="0.65"
             />
 
-            <!-- Primary Neural Spine & Flowing Circuit Veins -->
             <path d="M 120 224 L 136 154 L 184 48" fill="none" stroke="#39ff14" stroke-width="2.6" stroke-linecap="round" class="circuit-line-slow" />
             <path d="M 131 172 L 92 146 L 78 122" fill="none" stroke="#39ff14" stroke-width="1.8" stroke-linecap="round" class="circuit-line-slow" />
             <path d="M 142 140 L 174 126 L 184 108" fill="none" stroke="#39ff14" stroke-width="1.8" stroke-linecap="round" class="circuit-line-slow" />
             <path d="M 154 112 L 114 92 L 102 72" fill="none" stroke="#39ff14" stroke-width="1.8" stroke-linecap="round" class="circuit-line-slow" />
             <path d="M 167 84 L 186 76" fill="none" stroke="#39ff14" stroke-width="1.6" stroke-linecap="round" class="circuit-line-slow" />
 
-            <!-- Microchip / Neural Core Nodes on Leaf -->
             <circle cx="184" cy="48" r="4.5" fill="#39ff14" class="blink-1" />
             <circle cx="78" cy="122" r="3.8" fill="#39ff14" class="blink-2" />
             <circle cx="184" cy="108" r="3.8" fill="#39ff14" class="blink-4" />
@@ -551,7 +444,6 @@
             <circle cx="136" cy="154" r="4.5" fill="#ffffff" stroke="#39ff14" stroke-width="1.5" class="blink-5" />
             <circle cx="154" cy="112" r="3" fill="#39ff14" class="blink-2" />
 
-            <!-- Slow Laser Biometric Scan Beam -->
             <rect x="64" y="128" width="132" height="2.8" fill="url(#scanGrad)" class="leaf-scan-slow" />
           </svg>
         </div>
@@ -559,14 +451,12 @@
 
       <!-- RIGHT COLUMN: TITLE WITH REPEATING CYBER-PLANT GROWTH + SUBTITLE + CTA -->
       <div class="lg:col-span-7 text-center lg:text-left flex flex-col items-center lg:items-start">
-        <!-- Status Pill -->
         <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full hud-card mb-6">
           <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_10px_#39ff14]"></span>
           <span class="font-mono text-[11px] tracking-[0.22em] font-semibold uppercase">AI BIO-GROWTH ENGINE • ONLINE</span>
           <span class="w-2 h-2 rounded-full bg-emerald-500 blink-4 shadow-[0_0_10px_#00c853]"></span>
         </div>
 
-        <!-- 3-Line Title + Left-to-Right Tech Vine Animation Before "Tumbuh Lebih Baik" -->
         <h1 class="font-display font-extrabold tracking-tight leading-[1.2] mb-5 w-full">
           <span class="block text-base sm:text-xl md:text-2xl font-semibold tracking-[0.2em] uppercase mb-1.5" style="color: var(--text-secondary);">
             Selamat Datang di
@@ -575,7 +465,6 @@
             Bank Konten
           </span>
 
-          <!-- Animated Left-to-Right Futuristic Cyber-Vine Stem & Sprouting Leaves -->
           <div class="w-full max-w-md mx-auto lg:mx-0 my-1.5 h-8 overflow-visible" aria-hidden="true">
             <svg viewBox="0 0 380 34" class="w-full h-full overflow-visible">
               <defs>
@@ -586,7 +475,6 @@
                 </linearGradient>
               </defs>
 
-              <!-- Growing Digital Root/Vine Stem from Left to Right -->
               <path
                 d="M 4 24 Q 55 12, 95 22 T 205 18 T 315 20 L 368 16"
                 fill="none"
@@ -596,20 +484,17 @@
                 class="cyber-vine-path"
               />
 
-              <!-- Sprouting Cyber Leaf Node 1 -->
               <g class="vine-bud-1">
                 <path d="M 95 22 C 88 10, 102 4, 112 8 C 110 18, 102 22, 95 22 Z" fill="#00c853" fill-opacity="0.45" stroke="#39ff14" stroke-width="1.4" />
                 <circle cx="95" cy="22" r="2.8" fill="#39ff14" />
               </g>
 
-              <!-- Sprouting Cyber Leaf Node 2 -->
               <g class="vine-bud-2">
                 <path d="M 205 18 C 198 6, 214 2, 224 6 C 221 15, 212 19, 205 18 Z" fill="#00c853" fill-opacity="0.5" stroke="#39ff14" stroke-width="1.4" />
                 <path d="M 205 18 C 200 28, 212 32, 220 28 C 218 22, 211 19, 205 18 Z" fill="#044729" fill-opacity="0.6" stroke="#00c853" stroke-width="1.2" />
                 <circle cx="205" cy="18" r="3" fill="#39ff14" />
               </g>
 
-              <!-- Sprouting Cyber Leaf Node 3 (Tip Bloom) -->
               <g class="vine-bud-3">
                 <path d="M 315 20 C 310 7, 326 3, 336 8 C 333 17, 323 21, 315 20 Z" fill="#39ff14" fill-opacity="0.45" stroke="#39ff14" stroke-width="1.5" />
                 <circle cx="368" cy="16" r="3.5" fill="#39ff14" />
@@ -617,18 +502,15 @@
             </svg>
           </div>
 
-          <!-- Line 3: Revealed Right After Vine Finishes Growing (Loops Continuously) -->
           <span class="block text-3xl sm:text-5xl xl:text-6xl text-cyber-green tumbuh-title-reveal">
             Tumbuh Lebih Baik
           </span>
         </h1>
 
-        <!-- Modernized Subtitle -->
         <p class="text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium" style="color: var(--text-secondary);">
           Pusat kendali produksi konten cerdas, arsitektur skrip berbasis AI, dan manajemen bank ide terpadu dalam satu antarmuka presisi berkecepatan tinggi.
         </p>
 
-        <!-- Action Button -->
         <button
           type="button"
           onclick="window.enterWorkspace()"
@@ -671,7 +553,6 @@
     <!-- Top Navigation HUD -->
     <header class="sticky top-0 z-40 hud-glass px-4 sm:px-8 py-3.5">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-        <!-- Brand & Back -->
         <div class="flex items-center gap-3">
           <button
             type="button"
@@ -693,7 +574,6 @@
           </div>
         </div>
 
-        <!-- 3 Main Menu Tabs -->
         <nav class="flex items-center gap-1.5 sm:gap-2 p-1 rounded-xl hud-card">
           <button
             type="button"
@@ -721,7 +601,6 @@
           </button>
         </nav>
 
-        <!-- Right Controls: Theme Toggle + Cloud Sync + Settings -->
         <div class="flex items-center gap-2">
           <button
             type="button"
@@ -759,7 +638,6 @@
       <!-- TAB 01: DASHBOARD TELEMETRY                           -->
       <!-- ===================================================== -->
       <section id="view-dashboard" class="space-y-6">
-        <!-- Large Cyber-Leaf Telemetry Banner -->
         <div class="hud-card rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4 relative overflow-hidden">
           <div class="flex items-center gap-5">
             <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-emerald-950/60 border border-emerald-400/40 flex items-center justify-center shrink-0 cyber-leaf-majestic">
@@ -790,12 +668,8 @@
           </div>
         </div>
 
-        <!-- RESTORED 3-ZONE PIPELINE KPI ARCHITECTURE:
-             LEFT (Large): TOTAL UNIT KONTEN
-             CENTER (4 Sub-Boxes): IDE MENTAH | SCRIPTING | EDITING | SIAP UPLOAD
-             RIGHT (Large): SUDAH TAYANG -->
+        <!-- 3-ZONE PIPELINE KPI ARCHITECTURE -->
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
-
           <!-- LEFT LARGE CARD: TOTAL UNIT KONTEN -->
           <div class="lg:col-span-3 hud-card rounded-2xl p-6 flex flex-col justify-between border-emerald-400/35 relative overflow-hidden">
             <div class="flex items-center justify-between mb-3">
@@ -814,7 +688,6 @@
 
           <!-- CENTER 4-BOX PIPELINE STAGE GRID -->
           <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <!-- Box 1: Ide Mentah -->
             <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">IDE MENTAH</span>
@@ -824,7 +697,6 @@
               <div class="font-mono text-[9px] mt-2 text-emerald-400/85">01 • KONSEP</div>
             </div>
 
-            <!-- Box 2: Scripting -->
             <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">SCRIPTING</span>
@@ -834,7 +706,6 @@
               <div class="font-mono text-[9px] mt-2 text-emerald-400/85">02 • NASKAH</div>
             </div>
 
-            <!-- Box 3: Editing -->
             <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">EDITING</span>
@@ -844,7 +715,6 @@
               <div class="font-mono text-[9px] mt-2 text-emerald-400/85">03 • VISUAL</div>
             </div>
 
-            <!-- Box 4: Siap Upload -->
             <div class="hud-card rounded-2xl p-4 flex flex-col justify-between">
               <div class="flex items-center justify-between mb-2">
                 <span class="font-mono text-[10px] tracking-wider uppercase" style="color: var(--text-muted);">SIAP UPLOAD</span>
@@ -920,7 +790,6 @@
       <!-- TAB 02: BANK KONTEN DATABASE                          -->
       <!-- ===================================================== -->
       <section id="view-bank" class="hidden space-y-6">
-        <!-- Large Cyber-Leaf Header Banner -->
         <div class="hud-card rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-5">
             <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-emerald-950/60 border border-emerald-400/40 flex items-center justify-center shrink-0 cyber-leaf-majestic">
@@ -1014,7 +883,6 @@
       <!-- TAB 03: CORE ENGINE (AI ARCHITECT)                    -->
       <!-- ===================================================== -->
       <section id="view-engine" class="hidden space-y-6">
-        <!-- Large Cyber-Leaf Header Banner -->
         <div class="hud-card rounded-2xl p-6 flex flex-wrap items-center justify-between gap-4">
           <div class="flex items-center gap-5">
             <div class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-emerald-950/60 border border-emerald-400/40 flex items-center justify-center shrink-0 cyber-leaf-majestic">
@@ -1305,14 +1173,14 @@
   </div>
 
   <!-- ========================================================= -->
-  <!-- CORE SCRIPT                                               -->
+  <!-- CORE SCRIPT (ANTI-OVERWRITE CLOUD SYNC ENGINE)            -->
   <!-- ========================================================= -->
   <script>
     (function () {
       const DEFAULT_SB_URL = 'https://cjvuwebpeoqzmrbjsjas.supabase.co';
       const DEFAULT_SB_KEY = 'sb_publishable_Jd5R0k7PFrLqHppW7q-hww_K4MxcduE';
       const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JGe5se4ouLX0V5Avk5afzQsMFEgqwZzm5wyltkhoFdzg';
-      const STORAGE_KEY = 'tlb_content_bank_v2';
+      const STORAGE_KEY = 'tlb_content_bank_v3';
 
       const SEED_DATA = [
         {
@@ -1389,14 +1257,14 @@
         if (!container) return;
         const el = document.createElement('div');
         const border = type === 'error' ? 'border-red-400 text-red-300' : 'border-emerald-400 text-emerald-300';
-        el.className = `view-transition px-4 py-2.5 rounded-xl bg-black/90 backdrop-blur-xl border ${border} font-mono text-xs shadow-2xl transition-all duration-300`;
+        el.className = `view-transition px-4 py-2.5 rounded-xl bg-black/90 backdrop-blur-xl border ${border} font-mono text-xs shadow-2xl transition-all duration-300 max-w-sm`;
         el.textContent = msg;
         container.appendChild(el);
         setTimeout(() => {
           el.style.opacity = '0';
           el.style.transform = 'translateY(8px)';
           setTimeout(() => el.remove(), 350);
-        }, 3000);
+        }, 3600);
       }
 
       function getConfig() {
@@ -1434,7 +1302,7 @@
 
       function loadLocalBank() {
         try {
-          const raw = localStorage.getItem(STORAGE_KEY);
+          const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem('tlb_content_bank_v2');
           if (raw) {
             const parsed = JSON.parse(raw);
             if (Array.isArray(parsed) && parsed.length > 0) return parsed;
@@ -1452,38 +1320,81 @@
         return dateStr;
       }
 
+      function toCloudRow(item) {
+        return {
+          id: item.id,
+          target_date: item.target_date,
+          pillar: item.pillar,
+          platform: item.platform,
+          format: item.format,
+          hook: item.hook,
+          script: item.script,
+          full_script: item.full_script || item.script,
+          cta: item.cta,
+          status: item.status,
+          notes: item.notes || ''
+        };
+      }
+
+      // SAFE TWO-WAY SYNC: Never wipes local data if cloud is empty or unreachable
       window.syncFromSupabase = async function (notify = false) {
         contentBank = loadLocalBank();
         renderAll();
+
         if (!supabaseClient) {
           updateSyncIndicator(false, 'LOCAL MODE');
           return;
         }
+
         try {
-          const { data, error } = await supabaseClient.from('bank_konten').select('*').order('id', { ascending: true });
+          const { data, error } = await supabaseClient
+            .from('bank_konten')
+            .select('*')
+            .order('id', { ascending: true });
+
           if (error) throw error;
+
           if (Array.isArray(data) && data.length > 0) {
-            contentBank = data.map(row => ({
-              id: row.id,
-              target_date: normalizeDateDisplay(row.target_date),
-              pillar: row.pillar || 'Habit Systems',
-              platform: row.platform || 'TikTok',
-              format: row.format || 'Video Pendek 3-60s',
-              hook: row.hook || '',
-              script: row.script || '',
-              full_script: row.full_script || row.script || '',
-              cta: row.cta || '',
-              status: row.status || 'Ide Mentah',
-              notes: row.notes || ''
-            }));
+            // Merge cloud & local items safely by ID (cloud wins for matching IDs, local-only items are preserved & pushed up)
+            const cloudMap = new Map();
+            data.forEach(row => {
+              cloudMap.set(row.id, {
+                id: row.id,
+                target_date: normalizeDateDisplay(row.target_date),
+                pillar: row.pillar || 'Habit Systems',
+                platform: row.platform || 'TikTok',
+                format: row.format || 'Video Pendek 3-60s',
+                hook: row.hook || '',
+                script: row.script || '',
+                full_script: row.full_script || row.script || '',
+                cta: row.cta || '',
+                status: row.status || 'Ide Mentah',
+                notes: row.notes || ''
+              });
+            });
+
+            const localOnlyItems = contentBank.filter(item => !cloudMap.has(item.id));
+            if (localOnlyItems.length > 0) {
+              await supabaseClient.from('bank_konten').upsert(localOnlyItems.map(toCloudRow));
+              localOnlyItems.forEach(item => cloudMap.set(item.id, item));
+            }
+
+            contentBank = Array.from(cloudMap.values()).sort((a, b) => a.id.localeCompare(b.id));
             saveLocalBank();
             renderAll();
+          } else if (contentBank.length > 0) {
+            // Cloud table is empty: automatically seed/upload current local bank to Supabase
+            const { error: seedErr } = await supabaseClient
+              .from('bank_konten')
+              .upsert(contentBank.map(toCloudRow));
+            if (seedErr) throw seedErr;
           }
+
           updateSyncIndicator(true, 'SUPABASE SYNCED');
-          if (notify) showToast('✓ Sinkronisasi Supabase berhasil');
+          if (notify) showToast('✓ Sinkronisasi Supabase berhasil & aman');
         } catch (err) {
-          updateSyncIndicator(false, 'CLOUD STANDBY');
-          if (notify) showToast('Memakai penyimpanan lokal', 'error');
+          updateSyncIndicator(false, 'CLOUD ERROR');
+          if (notify) showToast(`Gagal sync Supabase: ${err.message || 'Cek SQL/RLS'}`, 'error');
         }
       };
 
@@ -1491,27 +1402,24 @@
         saveLocalBank();
         if (!supabaseClient) return;
         try {
-          const { error } = await supabaseClient.from('bank_konten').upsert({
-            id: item.id,
-            target_date: item.target_date,
-            pillar: item.pillar,
-            platform: item.platform,
-            format: item.format,
-            hook: item.hook,
-            script: item.script,
-            full_script: item.full_script,
-            cta: item.cta,
-            status: item.status,
-            notes: item.notes || ''
-          });
-          if (!error) updateSyncIndicator(true, 'SUPABASE SYNCED');
-        } catch (e) {}
+          const { error } = await supabaseClient.from('bank_konten').upsert(toCloudRow(item));
+          if (error) throw error;
+          updateSyncIndicator(true, 'SUPABASE SYNCED');
+        } catch (err) {
+          updateSyncIndicator(false, 'CLOUD ERROR');
+          showToast(`Tersimpan lokal, gagal ke cloud: ${err.message || 'Cek SQL Supabase'}`, 'error');
+        }
       }
 
       async function deleteItemFromCloud(id) {
         saveLocalBank();
         if (!supabaseClient) return;
-        try { await supabaseClient.from('bank_konten').delete().eq('id', id); } catch (e) {}
+        try {
+          const { error } = await supabaseClient.from('bank_konten').delete().eq('id', id);
+          if (error) throw error;
+        } catch (err) {
+          showToast(`Gagal hapus di cloud: ${err.message}`, 'error');
+        }
       }
 
       window.enterWorkspace = function () {
