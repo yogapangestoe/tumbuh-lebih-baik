@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUMBUH LEBIH BAIK — Command HUD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --bg-obsidian: #030504;
+            --emerald-deep: #064e3b;
+            --emerald-glow: rgba(16, 185, 129, 0.38);
+            --lime-glow: rgba(74, 222, 128, 0.42);
+        }
+
+        body {
+            background-color: #030504;
+            color: #f8fafc;
+            overflow-x: hidden;
+        }
+
+        /* Custom Futuristic Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #040806;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #064e3b;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4ade80;
+        }
+
+        /* Repositioned Orbital Arc Glow (Clears all hero typography cleanly) */
+        .orbital-arc {
+            position: absolute;
+            top: -660px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1180px;
+            height: 760px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 50% 85%, rgba(6, 78, 59, 0.65) 0%, rgba(4, 47, 46, 0.25) 48%, transparent 74%);
+            border-bottom: 2px solid rgba(255, 255, 255, 0.9);
+            box-shadow:
+                0 10px 45px -4px rgba(74, 222, 128, 0.55),
+                0 24px 95px 6px rgba(6, 78, 59, 0.55),
+                inset 0 -16px 40px rgba(134, 239, 172, 0.32);
+            pointer-events: none;
+        }
+
+        .orbital-inner-flare {
+            position: absolute;
+            top: -455px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 580px;
+            height: 495px;
+            border-radius: 50%;
+            border-bottom: 1.5px solid rgba(134, 239, 172, 0.72);
+            box-shadow: 0 6px 30px rgba(74, 222, 128, 0.42);
+            pointer-events: none;
+        }
+
+        /* Gaussian Blur Ambient Orbs */
+        .gaussian-orb-deep {
+            position: absolute;
+            width: 440px;
+            height: 440px;
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(6, 78, 59, 0.55) 0%, rgba(6, 95, 70, 0.15) 55%, transparent 75%);
+            filter: blur(75px);
+            pointer-events: none;
+        }
+
+        .gaussian-orb-mint {
+            position: absolute;
+            width: 340px;
+            height: 340px;
+            border-radius: 9999px;
+            background: radial-gradient(circle, rgba(74, 222, 128, 0.22) 0%, rgba(16, 185, 129, 0.08) 55%, transparent 75%);
+            filter: blur(85px);
+            pointer-events: none;
+        }
+
+        /* Subtle Tech Grid Background */
+        .bg-hud-grid {
+            background-image: 
+                linear-gradient(to right, rgba(74, 222, 128, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(74, 222, 128, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Tech Blinking / Telemetry Pulse Animations */
+        @keyframes techBlink {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            45% { opacity: 0.25; transform: scale(0.92); }
+            55% { opacity: 0.95; transform: scale(1.05); }
+            75% { opacity: 0.35; }
+        }
+
+        @keyframes telemetryFlicker {
+            0%, 100% { opacity: 0.85; }
+            50% { opacity: 0.3; }
+        }
+
+        .tech-blink {
+            animation: techBlink 2.2s infinite ease-in-out;
+        }
+        .tech-blink-fast {
+            animation: techBlink 1.3s infinite ease-in-out;
+        }
+        .tech-blink-slow {
+            animation: telemetryFlicker 3.4s infinite ease-in-out;
+        }
+
+        /* Strong CTA Pill Glow (White + Mint/Emerald) */
+        .btn-gateway-glow {
+            box-shadow:
+                0 0 24px rgba(255, 255, 255, 0.45),
+                0 0 60px rgba(74, 222, 128, 0.48),
+                inset 0 0 12px rgba(255, 255, 255, 0.85);
+            transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .btn-gateway-glow:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow:
+                0 0 34px rgba(255, 255, 255, 0.75),
+                0 0 88px rgba(74, 222, 128, 0.72),
+                inset 0 0 16px rgba(255, 255, 255, 1);
+        }
+
+        /* Title Glows */
+        .title-glow-white {
+            text-shadow: 0 0 26px rgba(255, 255, 255, 0.24), 0 0 42px rgba(74, 222, 128, 0.18);
+        }
+
+        /* Gaussian Glass Panel */
+        .hud-panel {
+            background: rgba(6, 12, 9, 0.76);
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+            border: 1px solid rgba(74, 222, 128, 0.14);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+        }
+
+        /* Mode Specific Glow Borders (Deep Emerald vs Neon Mint/Lime) */
+        .mode-panel-deep {
+            background: linear-gradient(180deg, rgba(6, 40, 29, 0.88) 0%, rgba(5, 10, 8, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(16, 185, 129, 0.52);
+            box-shadow: 0 0 36px -10px rgba(16, 185, 129, 0.32);
+        }
+        .mode-panel-mint {
+            background: linear-gradient(180deg, rgba(14, 36, 20, 0.88) 0%, rgba(6, 11, 8, 0.94) 100%);
+            backdrop-filter: blur(20px);
+            border: 1.5px solid rgba(134, 239, 172, 0.55);
+            box-shadow: 0 0 36px -10px rgba(74, 222, 128, 0.34);
+        }
+    </style>
+</head>
+<body class="bg-[#030504] text-slate-100 font-sans antialiased selection:bg-emerald-400 selection:text-black">
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: FUTURISTIC PROJECT GATEWAY (LANDING)                          -->
+    <!-- ===================================================================== -->
+    <div id="view-landing" class="relative min-h-screen flex flex-col justify-between overflow-hidden bg-[#030504] bg-hud-grid">
+        <!-- Orbital Arc Light Effects (Positioned safely above all text) -->
+        <div class="orbital-arc"></div>
+        <div class="orbital-inner-flare"></div>
+
+        <!-- Ambient Gaussian Blur Glow Layers -->
+        <div class="gaussian-orb-deep -bottom-32 -left-24"></div>
+        <div class="gaussian-orb-mint top-1/3 -right-24"></div>
+
+        <!-- Floating Gaussian Glass Pill Top Bar -->
+        <header class="relative z-10 w-full max-w-5xl mx-auto px-4 pt-6">
+            <div class="flex items-center justify-between px-5 py-2.5 rounded-full bg-[#06140e]/75 backdrop-blur-2xl border border-emerald-400/25 shadow-[0_8px_32px_rgba(0,0,0,0.65)]">
+                <div class="flex items-center gap-2.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_#4ade80] tech-blink"></span>
+                    <span class="font-display font-bold text-xs tracking-[0.22em] text-white uppercase">TLB // SYSTEM</span>
+                </div>
+                <div class="hidden sm:flex items-center gap-6 text-[11px] font-mono tracking-widest text-emerald-200/60 uppercase">
+                    <span class="flex items-center gap-1.5"><span class="w-1 h-1 rounded-full bg-emerald-400 tech-blink-slow"></span>TELEMETRY</span>
+                    <span>CONTENT BANK</span>
+                    <span>CORE ENGINE</span>
+                </div>
+                <button onclick="enterProject()" class="px-4 py-1.5 rounded-full bg-white text-black font-bold text-[11px] tracking-wider uppercase hover:bg-emerald-200 transition-all cursor-pointer shadow-[0_0_18px_rgba(74,222,128,0.45)]">
+                    LAUNCH HUD
+                </button>
+            </div>
+        </header>
+
+        <!-- Center Wide-Spaced Futuristic Hero (Extra top padding so arc never overlaps) -->
+        <main class="relative z-10 w-full max-w-6xl mx-auto px-4 pt-28 pb-16 flex flex-col items-center text-center my-auto">
+            <!-- Tech Blinking Telemetry Node -->
+            <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-[#061b13]/80 backdrop-blur-xl border border-emerald-400/35 text-[10px] font-mono tracking-[0.25em] text-emerald-300 uppercase mb-8 shadow-[0_0_24px_rgba(16,185,129,0.2)]">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#4ade80] tech-blink-fast"></span>
+                <span>CONTENT COMMAND INTERFACE &bull; ACTIVE</span>
+                <span class="w-1.5 h-1.5 rounded-full bg-white/80 tech-blink"></span>
+            </div>
+
+            <!-- Wide-Spaced Title -->
+            <h1 class="font-display font-bold text-2xl sm:text-4xl md:text-5xl lg:text-[52px] text-white uppercase tracking-[0.28em] sm:tracking-[0.38em] leading-relaxed title-glow-white pl-[0.28em] sm:pl-[0.38em]">
+                TUMBUH LEBIH BAIK
+            </h1>
+
+            <p class="mt-5 text-[11px] sm:text-xs font-mono tracking-[0.24em] text-emerald-200/70 uppercase">
+                AUTONOMOUS SCRIPT ENGINE &amp; BANK IDE KONTEN
+            </p>
+
+            <!-- Compact Live Telemetry Strip with Gaussian Blur -->
+            <div class="mt-9 inline-flex items-center divide-x divide-emerald-400/20 rounded-2xl bg-[#06160f]/70 backdrop-blur-xl border border-emerald-400/25 px-4 py-2.5 text-[11px] font-mono shadow-[0_0_30px_rgba(6,78,59,0.3)]">
+                <div class="px-4 flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 tech-blink"></span>
+                    <span class="text-slate-400">UNITS:</span>
+                    <span id="landing-total-count" class="text-white font-bold ml-1">2</span>
+                </div>
+                <div class="px-4">
+                    <span class="text-slate-400">PILLARS:</span>
+                    <span class="text-emerald-300 font-bold ml-1">04</span>
+                </div>
+                <div class="px-4">
+                    <span class="text-slate-400">CHANNELS:</span>
+                    <span class="text-white font-bold ml-1">IG / TT</span>
+                </div>
+            </div>
+
+            <!-- Strong Thick Glowing CTA Button -->
+            <div class="mt-10">
+                <button onclick="enterProject()" class="btn-gateway-glow px-10 py-4 rounded-full bg-white text-black font-display font-extrabold text-xs sm:text-sm tracking-[0.22em] uppercase border-2 border-emerald-200 flex items-center gap-3 cursor-pointer">
+                    <span>MASUK KE PROJECT</span>
+                    <svg class="w-4 h-4 stroke-[2.5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+                    </svg>
+                </button>
+            </div>
+        </main>
+
+        <!-- Minimal Bottom Status with Blinking Tech Node -->
+        <footer class="relative z-10 w-full max-w-5xl mx-auto px-6 py-5 flex items-center justify-between text-[10px] font-mono tracking-[0.2em] text-emerald-200/50 uppercase border-t border-emerald-400/15">
+            <span class="flex items-center gap-2"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400 tech-blink"></span>WORKSPACE // TLB-CORE</span>
+            <span id="cloud-sync-footer" class="tech-blink-slow">SUPABASE CLOUD CONNECTED</span>
+        </footer>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: WORKSPACE HUD (3 MENUS: DASHBOARD, BANK KONTEN, CORE ENGINE)  -->
+    <!-- ===================================================================== -->
+    <div id="view-workspace" class="hidden relative min-h-screen flex flex-col bg-[#030504] bg-hud-grid overflow-x-hidden">
+        
+        <!-- Ambient Gaussian Blur Glow in Workspace -->
+        <div class="gaussian-orb-deep top-20 -left-32 opacity-60"></div>
+        <div class="gaussian-orb-mint bottom-10 -right-32 opacity-50"></div>
+
+        <!-- Top Futuristic Command Bar -->
+        <nav class="sticky top-0 z-30 bg-[#040806]/85 backdrop-blur-2xl border-b border-emerald-400/15">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between py-3 lg:h-16 gap-3">
+                    
+                    <!-- Left: Back & Project Identifier -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <button onclick="exitProject()" title="Kembali ke Gateway" class="px-2.5 py-1.5 rounded-lg bg-emerald-950/50 hover:bg-emerald-900/60 border border-emerald-400/25 text-emerald-200 hover:text-white transition-all flex items-center gap-1.5 text-[11px] font-mono uppercase cursor-pointer">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                                </svg>
+                                <span>GATEWAY</span>
+                            </button>
+                            <div class="h-4 w-px bg-emerald-400/20"></div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#4ade80] tech-blink"></span>
+                                <span class="font-display font-bold text-xs sm:text-sm tracking-[0.16em] text-white uppercase">TUMBUH LEBIH BAIK</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Center/Right: 3 Main Navigation Menus -->
+                    <div class="grid grid-cols-3 sm:flex items-center gap-1.5 bg-[#06120c]/80 backdrop-blur-xl p-1 rounded-xl border border-emerald-400/20">
+                        <!-- MENU 1: DASHBOARD -->
+                        <button id="nav-btn-dashboard" onclick="switchTab('dashboard')" class="px-3.5 py-2 rounded-lg text-[11px] font-mono font-bold tracking-wider uppercase transition-all bg-white text-black shadow-[0_0_16px_rgba(74,222,128,0.35)] cursor-pointer text-center">
+                            01 // DASHBOARD
+                        </button>
+
+                        <!-- MENU 2: BANK KONTEN -->
+                        <button id="nav-btn-bank" onclick="switchTab('bank')" class="px-3.5 py-2 rounded-lg text-[11px] font-mono font-semibold tracking-wider uppercase transition-all text-slate-400 hover:text-white hover:bg-emerald-500/10 cursor-pointer flex items-center justify-center gap-1.5">
+                            <span>02 // BANK KONTEN</span>
+                            <span id="nav-bank-badge" class="px-1.5 py-0.2 rounded bg-emerald-950 border border-emerald-400/30 text-emerald-300 text-[10px] font-bold">2</span>
+                        </button>
+
+                        <!-- MENU 3: CORE ENGINE -->
+                        <button id="nav-btn-engine" onclick="switchTab('engine')" class="px-3.5 py-2 rounded-lg text-[11px] font-mono font-semibold tracking-wider uppercase transition-all text-slate-400 hover:text-white hover:bg-emerald-500/10 cursor-pointer text-center">
+                            03 // CORE ENGINE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Workspace Container -->
+        <main class="relative z-10 flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-7">
+
+            <!-- ============================================================= -->
+            <!-- MENU 01: DASHBOARD TELEMETRY & ANALYTICS                      -->
+            <!-- ============================================================= -->
+            <div id="view-tab-dashboard" class="space-y-6">
+                
+                <!-- Enlarged & Bold Page Header -->
+                <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-3 pb-4 border-b border-emerald-400/15">
+                    <div>
+                        <p class="text-[10px] font-mono tracking-[0.25em] text-emerald-400 uppercase mb-1 flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 tech-blink-fast"></span>
+                            <span>SYSTEM OVERVIEW // LIVE SYNC</span>
+                        </p>
+                        <h2 class="font-display text-2xl sm:text-3xl font-extrabold tracking-wide text-white uppercase title-glow-white">
+                            DASHBOARD TELEMETRY &amp; ANALYTICS
+                        </h2>
+                    </div>
+                    <button onclick="switchTab('engine')" class="self-start sm:self-auto px-4 py-2 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-400/45 text-emerald-300 font-mono text-[11px] font-bold tracking-wider uppercase transition-all shadow-[0_0_18px_rgba(16,185,129,0.2)] cursor-pointer">
+                        + LAUNCH CORE ENGINE &rarr;
+                    </button>
+                </div>
+
+                <!-- 3-ZONE KPI LAYOUT: [LEFT: TOTAL UNIT (BIG)] - [CENTER: 4 PIPELINE STAGES] - [RIGHT: TAYANG (BIG)] -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+                    
+                    <!-- LEFT ZONE (3 cols): TOTAL UNIT (WHITE & DEEP EMERALD GAUSSIAN GLOW) -->
+                    <div class="lg:col-span-3 rounded-2xl bg-gradient-to-br from-emerald-950/70 via-[#07140e]/85 to-black/90 backdrop-blur-2xl border border-emerald-400/35 p-6 flex flex-col justify-between shadow-[0_0_32px_rgba(16,185,129,0.16)] relative overflow-hidden">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-mono font-bold tracking-[0.2em] text-emerald-200 uppercase">TOTAL UNIT</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-white shadow-[0_0_12px_#ffffff] tech-blink"></span>
+                        </div>
+                        <div class="my-4">
+                            <p id="stat-total" class="font-display text-5xl sm:text-6xl font-black text-white tracking-tight title-glow-white">2</p>
+                        </div>
+                        <p class="text-[10px] font-mono tracking-wider text-emerald-300/75 uppercase">SEMUA IDE DALAM BANK DATA</p>
+                    </div>
+
+                    <!-- CENTER ZONE (6 cols): 4 PIPELINE STAGES (IDE MENTAH, SCRIPTING, EDITING, SIAP UPLOAD) -->
+                    <div class="lg:col-span-6 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                        <!-- Ide Mentah -->
+                       
