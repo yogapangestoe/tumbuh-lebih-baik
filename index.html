@@ -3,19 +3,51 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TUMBUH LEBIH BAIK // Content Command HUD</title>
+  <title>Selamat Datang di Bank Konten Tumbuh Lebih Baik // Futuristic HUD</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-obsidian: #030504;
-      --emerald-deep: #064e3b;
-      --emerald-mid: #10b981;
-      --mint-neon: #6ee7b7;
-      --pure-white: #ffffff;
+      /* DARK MODE (Default: Hitam Obsidian + Hijau Tua ke Hijau Muda Neon) */
+      --bg-main: #020503;
+      --bg-surface: rgba(5, 16, 11, 0.76);
+      --bg-card: rgba(7, 22, 15, 0.72);
+      --bg-input: rgba(2, 10, 6, 0.85);
+      --text-primary: #ffffff;
+      --text-secondary: rgba(255, 255, 255, 0.72);
+      --text-muted: rgba(255, 255, 255, 0.48);
+      --border-subtle: rgba(16, 185, 129, 0.22);
+      --border-strong: rgba(57, 255, 20, 0.48);
+      --green-deep: #043927;
+      --green-mid: #00c853;
+      --green-bright: #39ff14;
+      --glow-color: rgba(57, 255, 20, 0.32);
+      --grid-line: rgba(57, 255, 20, 0.055);
+      --orb-deep-op: 0.65;
+      --orb-bright-op: 0.28;
+    }
+
+    html.light {
+      /* LIGHT MODE (Putih Bersih + Hijau Tua Zamrud ke Hijau Muda Segar) */
+      --bg-main: #f4faf6;
+      --bg-surface: rgba(255, 255, 255, 0.86);
+      --bg-card: rgba(255, 255, 255, 0.82);
+      --bg-input: rgba(240, 250, 244, 0.95);
+      --text-primary: #031a0f;
+      --text-secondary: #15402b;
+      --text-muted: #4b735e;
+      --border-subtle: rgba(4, 79, 44, 0.18);
+      --border-strong: rgba(0, 168, 89, 0.48);
+      --green-deep: #034d29;
+      --green-mid: #00a859;
+      --green-bright: #16db65;
+      --glow-color: rgba(0, 168, 89, 0.24);
+      --grid-line: rgba(4, 79, 44, 0.06);
+      --orb-deep-op: 0.22;
+      --orb-bright-op: 0.25;
     }
 
     * {
@@ -23,183 +55,215 @@
     }
 
     body {
-      background-color: var(--bg-obsidian);
-      color: #f8fafc;
-      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: 'Space Grotesk', sans-serif;
       overflow-x: hidden;
       margin: 0;
+      transition: background-color 0.35s ease, color 0.35s ease;
+    }
+
+    .font-display {
+      font-family: 'Orbitron', sans-serif;
     }
 
     .font-mono {
       font-family: 'JetBrains Mono', monospace;
     }
 
-    /* Ambient Gaussian Blur Layers - Strictly non-interactive */
-    .gaussian-orb-deep,
-    .gaussian-orb-mint,
-    .orbital-arc,
-    .orbital-inner-flare,
-    .tech-grid {
+    /* Non-interactive Ambient Effects */
+    .ambient-layer {
       pointer-events: none !important;
       user-select: none !important;
     }
 
+    /* Gaussian Blur Orbs (Hijau Tua & Hijau Muda) */
     .gaussian-orb-deep {
       position: fixed;
-      width: 520px;
-      height: 520px;
+      width: 580px;
+      height: 580px;
       border-radius: 9999px;
-      background: radial-gradient(circle, rgba(6, 78, 59, 0.55) 0%, rgba(6, 78, 59, 0) 72%);
-      filter: blur(85px);
+      background: radial-gradient(circle, var(--green-deep) 0%, transparent 72%);
+      filter: blur(95px);
+      opacity: var(--orb-deep-op);
       z-index: 0;
     }
 
-    .gaussian-orb-mint {
+    .gaussian-orb-bright {
       position: fixed;
-      width: 420px;
-      height: 420px;
+      width: 460px;
+      height: 460px;
       border-radius: 9999px;
-      background: radial-gradient(circle, rgba(110, 231, 183, 0.22) 0%, rgba(16, 185, 129, 0) 70%);
-      filter: blur(90px);
+      background: radial-gradient(circle, var(--green-bright) 0%, transparent 72%);
+      filter: blur(105px);
+      opacity: var(--orb-bright-op);
       z-index: 0;
     }
 
-    /* Subtle Tech Grid */
+    /* Futuristic Tech Grid */
     .tech-grid {
       position: fixed;
       inset: 0;
-      background-image: 
-        linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(16, 185, 129, 0.04) 1px, transparent 1px);
-      background-size: 48px 48px;
-      mask-image: radial-gradient(ellipse at center, black 40%, transparent 85%);
+      background-image:
+        linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: radial-gradient(ellipse at center, black 45%, transparent 90%);
       z-index: 0;
     }
 
-    /* Orbital Glow Ring positioned safely above Hero Badge */
-    .orbital-arc {
-      position: absolute;
-      top: -390px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 960px;
-      height: 520px;
-      border-radius: 50%;
-      border: 1.5px solid rgba(110, 231, 183, 0.45);
-      box-shadow: 
-        0 18px 65px rgba(16, 185, 129, 0.35),
-        inset 0 -18px 45px rgba(110, 231, 183, 0.25);
-      z-index: 1;
-    }
-
-    .orbital-inner-flare {
-      position: absolute;
-      top: -386px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 680px;
-      height: 512px;
-      border-radius: 50%;
-      border-bottom: 2px solid #ffffff;
-      filter: blur(2px);
-      opacity: 0.85;
-      z-index: 1;
-    }
-
-    /* Glassmorphism HUD Panel */
+    /* Glassmorphism HUD Surfaces */
     .hud-glass {
-      background: rgba(8, 14, 11, 0.72);
-      backdrop-filter: blur(22px);
-      -webkit-backdrop-filter: blur(22px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+      background: var(--bg-surface);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
     }
 
     .hud-card {
-      background: rgba(10, 18, 14, 0.68);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      transition: border-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.2s ease;
     }
 
     .hud-card:hover {
-      border-color: rgba(110, 231, 183, 0.35);
-      box-shadow: 0 0 28px rgba(16, 185, 129, 0.14);
+      border-color: var(--border-strong);
+      box-shadow: 0 0 32px var(--glow-color);
     }
 
-    /* Blinking Tech Telemetry Nodes */
-    @keyframes hudBlink {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.25; transform: scale(0.85); }
+    .hud-input {
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-primary);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
     }
 
-    @keyframes hudScan {
-      0% { opacity: 0.2; }
-      50% { opacity: 0.9; }
-      100% { opacity: 0.2; }
+    .hud-input:focus {
+      outline: none;
+      border-color: var(--green-bright);
+      box-shadow: 0 0 18px var(--glow-color);
     }
 
-    .blink-fast {
-      animation: hudBlink 1.4s infinite ease-in-out;
+    /* Rich Deep-Green to Bright-Green Gradient Text & Buttons */
+    .text-cyber-green {
+      background: linear-gradient(120deg, var(--green-mid) 0%, var(--green-bright) 55%, #a7ff83 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .blink-slow {
-      animation: hudBlink 2.8s infinite ease-in-out;
+    html.light .text-cyber-green {
+      background: linear-gradient(120deg, #023e20 0%, #009e52 55%, #12c95b 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .blink-delay {
-      animation: hudBlink 2.1s 0.7s infinite ease-in-out;
-    }
-
-    .scan-pulse {
-      animation: hudScan 3.2s infinite ease-in-out;
-    }
-
-    /* Buttons */
-    .btn-mint {
-      background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
-      color: #02130d;
-      font-weight: 700;
-      box-shadow: 0 0 28px rgba(110, 231, 183, 0.35);
+    .btn-cyber {
+      background: linear-gradient(135deg, #044729 0%, #00c853 50%, #39ff14 100%);
+      color: #011409;
+      font-weight: 800;
+      box-shadow: 0 0 28px var(--glow-color);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       transition: all 0.2s ease;
       cursor: pointer;
     }
 
-    .btn-mint:hover {
+    .btn-cyber:hover {
       transform: translateY(-1px);
-      box-shadow: 0 0 38px rgba(110, 231, 183, 0.55);
-      filter: brightness(1.05);
+      box-shadow: 0 0 42px rgba(57, 255, 20, 0.55);
+      filter: brightness(1.06);
     }
 
-    .btn-mint:active {
+    .btn-cyber:active {
       transform: translateY(0);
     }
 
+    /* Multi-Frequency Tech Blinking Animations */
+    @keyframes blinkRapid {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.15; transform: scale(0.78); }
+    }
+
+    @keyframes blinkStrobe {
+      0%, 45%, 55%, 100% { opacity: 1; }
+      50% { opacity: 0.1; }
+    }
+
+    @keyframes pulseRing {
+      0% { transform: scale(0.92); opacity: 0.85; }
+      70% { transform: scale(1.22); opacity: 0; }
+      100% { transform: scale(1.22); opacity: 0; }
+    }
+
+    /* Futuristic Cyber-Leaf Float & Circuit Animation */
+    @keyframes leafFloat {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-9px) rotate(2.5deg); }
+    }
+
+    @keyframes circuitFlow {
+      0% { stroke-dashoffset: 120; }
+      100% { stroke-dashoffset: 0; }
+    }
+
+    @keyframes scanBeam {
+      0% { transform: translateY(-38px); opacity: 0; }
+      25% { opacity: 0.9; }
+      75% { opacity: 0.9; }
+      100% { transform: translateY(42px); opacity: 0; }
+    }
+
+    .blink-1 { animation: blinkRapid 1.1s infinite ease-in-out; }
+    .blink-2 { animation: blinkRapid 1.7s 0.4s infinite ease-in-out; }
+    .blink-3 { animation: blinkStrobe 2.3s 0.8s infinite; }
+    .blink-4 { animation: blinkRapid 0.9s 0.2s infinite ease-in-out; }
+    .blink-5 { animation: blinkStrobe 1.9s 1.1s infinite; }
+
+    .cyber-leaf-anim {
+      animation: leafFloat 4.5s infinite ease-in-out;
+      filter: drop-shadow(0 0 18px var(--glow-color));
+    }
+
+    .circuit-line {
+      stroke-dasharray: 24 12;
+      animation: circuitFlow 3.2s linear infinite;
+    }
+
+    .leaf-scan-bar {
+      animation: scanBeam 2.8s infinite ease-in-out;
+    }
+
+    .pulse-ring-anim {
+      transform-origin: center;
+      animation: pulseRing 2.4s infinite ease-out;
+    }
+
     /* Custom Scrollbar */
-    ::-webkit-scrollbar {
-      width: 6px;
-      height: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: #030504;
-    }
-    ::-webkit-scrollbar-thumb {
-      background: #064e3b;
-      border-radius: 3px;
-    }
-    ::-webkit-scrollbar-thumb:hover {
-      background: #10b981;
-    }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--green-mid); border-radius: 4px; }
   </style>
 </head>
 <body class="min-h-screen relative selection:bg-emerald-400 selection:text-black">
 
-  <!-- Ambient Gaussian Blur & Tech Grid Background -->
-  <div class="tech-grid"></div>
-  <div class="gaussian-orb-deep -top-32 -left-28"></div>
-  <div class="gaussian-orb-mint top-1/4 -right-24"></div>
-  <div class="gaussian-orb-deep bottom-0 left-1/3"></div>
+  <!-- Ambient Gaussian Blur & Futuristic Grid -->
+  <div class="tech-grid ambient-layer"></div>
+  <div class="gaussian-orb-deep ambient-layer -top-32 -left-28"></div>
+  <div class="gaussian-orb-bright ambient-layer top-1/4 -right-24"></div>
+  <div class="gaussian-orb-deep ambient-layer -bottom-24 left-1/3"></div>
+
+  <!-- Floating Blinking Telemetry Particles Across Screen -->
+  <div class="ambient-layer fixed inset-0 z-10 overflow-hidden">
+    <span class="absolute top-20 left-[12%] w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_12px_#39ff14]"></span>
+    <span class="absolute top-36 right-[16%] w-1.5 h-1.5 rounded-full bg-emerald-300 blink-2 shadow-[0_0_10px_#39ff14]"></span>
+    <span class="absolute top-1/2 left-[6%] w-2 h-2 rounded-full bg-emerald-500 blink-3 shadow-[0_0_14px_#00c853]"></span>
+    <span class="absolute bottom-28 right-[10%] w-2.5 h-2.5 rounded-full bg-emerald-400 blink-4 shadow-[0_0_14px_#39ff14]"></span>
+    <span class="absolute bottom-40 left-[22%] w-1.5 h-1.5 rounded-full bg-emerald-300 blink-5 shadow-[0_0_10px_#39ff14]"></span>
+    <span class="absolute top-28 left-1/2 w-1.5 h-1.5 rounded-full bg-emerald-400 blink-2 shadow-[0_0_10px_#39ff14]"></span>
+  </div>
 
   <!-- Toast Notification Container -->
   <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
@@ -207,78 +271,143 @@
   <!-- ========================================================= -->
   <!-- GATEWAY LANDING SCREEN                                    -->
   <!-- ========================================================= -->
-  <section id="gateway-screen" class="relative z-30 min-h-screen flex flex-col items-center justify-center px-4 overflow-hidden">
-    <!-- Top Orbital Light Arc (Safely above text) -->
-    <div class="orbital-arc"></div>
-    <div class="orbital-inner-flare"></div>
+  <section id="gateway-screen" class="relative z-30 min-h-screen flex flex-col items-center justify-center px-4 py-12">
 
-    <!-- Top Telemetry Bar -->
-    <div class="fixed top-5 left-6 right-6 z-30 flex items-center justify-between text-[11px] font-mono text-white/60">
-      <div class="flex items-center gap-2.5">
-        <span class="w-2 h-2 rounded-full bg-emerald-400 blink-fast shadow-[0_0_10px_#6ee7b7]"></span>
-        <span class="tracking-widest text-white/80">TLB // OS-v2.6</span>
-        <span class="hidden sm:inline text-emerald-400/70">[NODE: BANJARNEGARA-ID]</span>
+    <!-- Top HUD Telemetry & Theme Switcher -->
+    <div class="fixed top-4 left-4 right-4 sm:left-8 sm:right-8 z-40 flex items-center justify-between">
+      <div class="flex items-center gap-2.5 px-3.5 py-1.5 rounded-full hud-card font-mono text-[11px]">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_10px_#39ff14]"></span>
+        <span class="font-bold tracking-wider">TLB // NEURAL OS</span>
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 blink-4"></span>
       </div>
-      <div class="flex items-center gap-3">
-        <span id="gateway-db-badge" class="px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/30 text-emerald-300 flex items-center gap-1.5">
-          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-slow"></span>
-          CLOUD SYNC READY
-        </span>
+
+      <div class="flex items-center gap-2.5">
+        <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full hud-card font-mono text-[10px]">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-2"></span>
+          <span>SYNC: SUPABASE</span>
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-5"></span>
+        </div>
+
+        <!-- Dark / Light Mode Toggle Button -->
+        <button
+          type="button"
+          onclick="window.toggleTheme()"
+          class="px-3.5 py-1.5 rounded-full hud-card font-mono text-[11px] font-semibold flex items-center gap-2 cursor-pointer hover:border-emerald-400 transition"
+          title="Ganti Mode Gelap / Terang"
+        >
+          <span class="w-2 h-2 rounded-full bg-emerald-400 blink-3"></span>
+          <span id="theme-label-gw">☀ MODE TERANG</span>
+        </button>
       </div>
     </div>
 
-    <!-- Center Hero Content -->
-    <div class="relative z-30 max-w-2xl w-full text-center mt-16">
-      <!-- Status Badge -->
-      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-white/[0.04] border border-emerald-400/30 backdrop-blur-xl mb-7 shadow-[0_0_25px_rgba(16,185,129,0.18)]">
-        <span class="w-2 h-2 rounded-full bg-emerald-300 blink-fast shadow-[0_0_8px_#6ee7b7]"></span>
-        <span class="font-mono text-[11px] tracking-[0.22em] text-emerald-200 uppercase">CONTENT COMMAND INTERFACE • ACTIVE</span>
-        <span class="w-1.5 h-1.5 rounded-full bg-white/70 blink-delay"></span>
+    <!-- Center Hero Container -->
+    <div class="relative z-30 max-w-3xl w-full text-center flex flex-col items-center">
+
+      <!-- Animated Futuristic AI Bio-Tech Leaf Emblem -->
+      <div class="relative w-36 h-36 sm:w-44 sm:h-44 mb-5 flex items-center justify-center cyber-leaf-anim">
+        <!-- Outer HUD Tech Ring -->
+        <svg viewBox="0 0 200 200" class="w-full h-full overflow-visible">
+          <defs>
+            <linearGradient id="cyberLeafGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#044729" />
+              <stop offset="50%" stop-color="#00c853" />
+              <stop offset="100%" stop-color="#39ff14" />
+            </linearGradient>
+            <linearGradient id="scanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="transparent" />
+              <stop offset="50%" stop-color="#39ff14" />
+              <stop offset="100%" stop-color="transparent" />
+            </linearGradient>
+          </defs>
+
+          <!-- Pulsing Radar Rings -->
+          <circle cx="100" cy="100" r="82" fill="none" stroke="url(#cyberLeafGrad)" stroke-width="1" stroke-dasharray="6 6" opacity="0.55" />
+          <circle cx="100" cy="100" r="68" fill="none" stroke="#39ff14" stroke-width="1.2" class="pulse-ring-anim" />
+
+          <!-- Corner Tech Brackets -->
+          <path d="M 35 55 L 35 35 L 55 35" fill="none" stroke="#39ff14" stroke-width="2" class="blink-1" />
+          <path d="M 165 55 L 165 35 L 145 35" fill="none" stroke="#39ff14" stroke-width="2" class="blink-2" />
+          <path d="M 35 145 L 35 165 L 55 165" fill="none" stroke="#00c853" stroke-width="2" class="blink-4" />
+          <path d="M 165 145 L 165 165 L 145 165" fill="none" stroke="#00c853" stroke-width="2" class="blink-5" />
+
+          <!-- Futuristic Geometric AI Leaf Silhouette -->
+          <path
+            d="M 100 158 C 56 144, 44 96, 74 56 C 88 38, 114 32, 146 34 C 150 74, 142 118, 100 158 Z"
+            fill="url(#cyberLeafGrad)"
+            fill-opacity="0.22"
+            stroke="url(#cyberLeafGrad)"
+            stroke-width="2.5"
+          />
+
+          <!-- Glowing Neural Circuit Veins Inside Leaf -->
+          <path d="M 96 164 L 106 116 L 138 44" fill="none" stroke="#39ff14" stroke-width="2.2" stroke-linecap="round" class="circuit-line" />
+          <path d="M 103 128 L 76 108 L 66 92" fill="none" stroke="#39ff14" stroke-width="1.6" stroke-linecap="round" class="circuit-line" />
+          <path d="M 112 104 L 134 94 L 140 82" fill="none" stroke="#39ff14" stroke-width="1.6" stroke-linecap="round" class="circuit-line" />
+          <path d="M 121 82 L 94 68 L 86 54" fill="none" stroke="#39ff14" stroke-width="1.6" stroke-linecap="round" class="circuit-line" />
+
+          <!-- Blinking Neural Nodes on Leaf -->
+          <circle cx="138" cy="44" r="3.5" fill="#39ff14" class="blink-1" />
+          <circle cx="66" cy="92" r="3" fill="#39ff14" class="blink-2" />
+          <circle cx="140" cy="82" r="3" fill="#39ff14" class="blink-4" />
+          <circle cx="86" cy="54" r="3" fill="#39ff14" class="blink-3" />
+          <circle cx="106" cy="116" r="3.5" fill="#ffffff" class="blink-5" />
+
+          <!-- Laser Scanner Line -->
+          <rect x="48" y="98" width="104" height="2.5" fill="url(#scanGrad)" class="leaf-scan-bar" />
+        </svg>
       </div>
 
-      <!-- Brand Title -->
-      <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-[1.1] mb-4">
-        TUMBUH <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-emerald-200 to-white">LEBIH BAIK</span>
+      <!-- Status Pill with Blinking Lights -->
+      <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full hud-card mb-5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_10px_#39ff14]"></span>
+        <span class="font-mono text-[11px] tracking-[0.22em] font-semibold uppercase">AI BIO-GROWTH ENGINE • ONLINE</span>
+        <span class="w-2 h-2 rounded-full bg-emerald-500 blink-4 shadow-[0_0_10px_#00c853]"></span>
+      </div>
+
+      <!-- Main Title (Requested Exact Title with Futuristic Font) -->
+      <h1 class="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight leading-[1.2] mb-5">
+        Selamat Datang di Bank Konten<br />
+        <span class="text-cyber-green">Tumbuh Lebih Baik</span>
       </h1>
 
-      <p class="text-sm sm:text-base text-white/65 max-w-lg mx-auto leading-relaxed mb-9 font-light">
-        Pusat kendali produksi konten, arsitektur skrip AI, dan manajemen bank ide terpadu dalam satu antarmuka presisi.
+      <!-- Modernized Subtitle -->
+      <p class="text-sm sm:text-base max-w-2xl mx-auto leading-relaxed mb-9 font-medium" style="color: var(--text-secondary);">
+        Pusat kendali produksi konten cerdas, arsitektur skrip berbasis AI, dan manajemen bank ide terpadu dalam satu antarmuka presisi berkecepatan tinggi.
       </p>
 
-      <!-- Primary Entry Button -->
-      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <button
-          id="btn-enter-project"
-          type="button"
-          onclick="window.enterWorkspace()"
-          class="btn-mint px-8 py-4 rounded-xl font-mono text-xs sm:text-sm tracking-[0.18em] uppercase inline-flex items-center gap-3"
-        >
-          <span>MASUK KE PROJECT</span>
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-          </svg>
-        </button>
-      </div>
+      <!-- Action Button -->
+      <button
+        type="button"
+        onclick="window.enterWorkspace()"
+        class="btn-cyber font-display px-9 py-4 rounded-xl text-xs sm:text-sm tracking-[0.18em] uppercase inline-flex items-center gap-3"
+      >
+        <span class="w-2 h-2 rounded-full bg-black blink-1"></span>
+        <span>MASUK KE SYSTEM HUD</span>
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+        </svg>
+      </button>
 
-      <!-- Bottom Micro Telemetry -->
-      <div class="mt-14 pt-6 border-t border-white/10 grid grid-cols-3 gap-4 max-w-md mx-auto font-mono text-[10px] text-white/50">
+      <!-- Bottom Telemetry Bar with Blinking Nodes -->
+      <div class="mt-12 pt-5 border-t border-emerald-500/20 grid grid-cols-3 gap-4 max-w-lg w-full font-mono text-[10px]">
         <div class="flex flex-col items-center gap-1">
-          <span class="text-emerald-300 font-semibold flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-fast"></span> SUPABASE
+          <span class="font-bold flex items-center gap-1.5 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1"></span> CLOUD DB
           </span>
-          <span>PERMANENT DB</span>
+          <span style="color: var(--text-muted);">SUPABASE ACTIVE</span>
         </div>
-        <div class="flex flex-col items-center gap-1 border-x border-white/10">
-          <span class="text-white font-semibold flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-white blink-delay"></span> CORE ENGINE
+        <div class="flex flex-col items-center gap-1 border-x border-emerald-500/20">
+          <span class="font-bold flex items-center gap-1.5 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 blink-3"></span> NEURAL AI
           </span>
-          <span>DUAL-MODE AI</span>
+          <span style="color: var(--text-muted);">DUAL-CORE READY</span>
         </div>
         <div class="flex flex-col items-center gap-1">
-          <span class="text-emerald-300 font-semibold flex items-center gap-1.5">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 blink-slow"></span> LATENCY
+          <span class="font-bold flex items-center gap-1.5 text-emerald-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 blink-5"></span> TELEMETRY
           </span>
-          <span>REALTIME HUD</span>
+          <span style="color: var(--text-muted);">REALTIME SYNC</span>
         </div>
       </div>
     </div>
@@ -290,36 +419,37 @@
   <div id="workspace-screen" class="hidden relative z-30 min-h-screen flex flex-col">
 
     <!-- Top Navigation HUD -->
-    <header class="sticky top-0 z-40 hud-glass border-b border-white/10 px-4 sm:px-8 py-3.5">
+    <header class="sticky top-0 z-40 hud-glass px-4 sm:px-8 py-3.5">
       <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
-        <!-- Brand Logo & Exit -->
+        <!-- Brand & Back -->
         <div class="flex items-center gap-3">
           <button
             type="button"
             onclick="window.exitWorkspace()"
-            title="Kembali ke Gateway"
-            class="w-9 h-9 rounded-lg bg-emerald-950/90 border border-emerald-400/35 flex items-center justify-center text-emerald-300 hover:bg-emerald-400 hover:text-black transition cursor-pointer"
+            title="Kembali ke Halaman Awal"
+            class="w-9 h-9 rounded-lg hud-card flex items-center justify-center text-emerald-400 hover:bg-emerald-500 hover:text-black transition cursor-pointer"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M11 17l-5-5m0 0l5-5m-5 5h12" />
             </svg>
           </button>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-sm sm:text-base tracking-wide text-white">TUMBUH LEBIH BAIK</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-fast"></span>
+              <span class="font-display font-bold text-xs sm:text-sm tracking-wider">TUMBUH LEBIH BAIK</span>
+              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-1 shadow-[0_0_8px_#39ff14]"></span>
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 blink-4"></span>
             </div>
-            <p class="font-mono text-[10px] text-emerald-300/80 tracking-widest">COMMAND HUD // WORKSPACE</p>
+            <p class="font-mono text-[10px] text-emerald-400 tracking-widest">FUTURISTIC CONTENT HUD</p>
           </div>
         </div>
 
-        <!-- 3 Main Navigation Tabs -->
-        <nav class="flex items-center gap-1.5 sm:gap-2 bg-black/60 p-1 rounded-xl border border-white/10">
+        <!-- 3 Main Menu Tabs -->
+        <nav class="flex items-center gap-1.5 sm:gap-2 p-1 rounded-xl hud-card">
           <button
             type="button"
             id="nav-dashboard"
             onclick="window.switchTab('dashboard')"
-            class="nav-btn px-3 sm:px-4 py-2 rounded-lg font-mono text-[11px] sm:text-xs font-semibold tracking-wider transition cursor-pointer bg-emerald-400 text-black"
+            class="nav-btn font-display px-3 sm:px-4 py-2 rounded-lg text-[10px] sm:text-xs font-bold tracking-wider transition cursor-pointer btn-cyber"
           >
             01 // DASHBOARD
           </button>
@@ -327,7 +457,7 @@
             type="button"
             id="nav-bank"
             onclick="window.switchTab('bank')"
-            class="nav-btn px-3 sm:px-4 py-2 rounded-lg font-mono text-[11px] sm:text-xs font-semibold tracking-wider transition cursor-pointer text-white/70 hover:text-white"
+            class="nav-btn font-display px-3 sm:px-4 py-2 rounded-lg text-[10px] sm:text-xs font-bold tracking-wider transition cursor-pointer opacity-75 hover:opacity-100"
           >
             02 // BANK KONTEN
           </button>
@@ -335,1159 +465,4 @@
             type="button"
             id="nav-engine"
             onclick="window.switchTab('engine')"
-            class="nav-btn px-3 sm:px-4 py-2 rounded-lg font-mono text-[11px] sm:text-xs font-semibold tracking-wider transition cursor-pointer text-white/70 hover:text-white"
-          >
-            03 // CORE ENGINE
-          </button>
-        </nav>
-
-        <!-- Right Cloud Status & Settings -->
-        <div class="flex items-center gap-2.5">
-          <div id="sync-status-pill" class="px-3 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-400/30 font-mono text-[10px] text-emerald-300 flex items-center gap-2">
-            <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-400 blink-fast"></span>
-            <span id="sync-label">SUPABASE ONLINE</span>
-          </div>
-          <button
-            type="button"
-            onclick="window.openSettingsModal()"
-            title="Pengaturan API Key & Cloud"
-            class="p-2 rounded-lg bg-white/5 border border-white/10 text-white/75 hover:text-emerald-300 hover:border-emerald-400/40 transition cursor-pointer"
-          >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </button>
-        </div>
-      </div>
-    </header>
-
-    <!-- Main View Container -->
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8">
-
-      <!-- ===================================================== -->
-      <!-- TAB 01: DASHBOARD TELEMETRY                           -->
-      <!-- ===================================================== -->
-      <section id="view-dashboard" class="space-y-6">
-        <!-- Top KPI Cards -->
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest text-white/50 uppercase">TOTAL UNIT KONTEN</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-fast"></span>
-            </div>
-            <div id="stat-total" class="text-3xl font-bold text-white font-mono">0</div>
-            <div class="text-[11px] text-emerald-300/80 mt-1">Tersimpan di Cloud</div>
-          </div>
-
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest text-white/50 uppercase">SIAP / TAYANG</span>
-              <span class="w-2 h-2 rounded-full bg-white blink-delay"></span>
-            </div>
-            <div id="stat-published" class="text-3xl font-bold text-emerald-300 font-mono">0</div>
-            <div class="text-[11px] text-white/60 mt-1">Ready & Published</div>
-          </div>
-
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest text-white/50 uppercase">DALAM PRODUKSI</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-slow"></span>
-            </div>
-            <div id="stat-progress" class="text-3xl font-bold text-white font-mono">0</div>
-            <div class="text-[11px] text-white/60 mt-1">Scripting & Editing</div>
-          </div>
-
-          <div class="hud-card rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-2">
-              <span class="font-mono text-[10px] tracking-widest text-white/50 uppercase">IDE MENTAH</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-300 blink-fast"></span>
-            </div>
-            <div id="stat-ideas" class="text-3xl font-bold text-emerald-200 font-mono">0</div>
-            <div class="text-[11px] text-white/60 mt-1">Antrian Pengembangan</div>
-          </div>
-        </div>
-
-        <!-- Middle Distribution Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Pillar Distribution -->
-          <div class="hud-card rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-5">
-              <div>
-                <h2 class="text-sm font-bold tracking-wider text-white uppercase">DISTRIBUSI PILAR KONTEN</h2>
-                <p class="font-mono text-[10px] text-white/50">ANALISIS TEMA TUMBUH LEBIH BAIK</p>
-              </div>
-              <span class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-400/30 font-mono text-[10px] text-emerald-300">LIVE METRIC</span>
-            </div>
-            <div id="pillar-bars" class="space-y-3.5"></div>
-          </div>
-
-          <!-- Platform Distribution -->
-          <div class="hud-card rounded-2xl p-6">
-            <div class="flex items-center justify-between mb-5">
-              <div>
-                <h2 class="text-sm font-bold tracking-wider text-white uppercase">TARGET PLATFORM & FORMAT</h2>
-                <p class="font-mono text-[10px] text-white/50">ALOKASI KANAL DISTRIBUSI</p>
-              </div>
-              <span class="px-2.5 py-1 rounded bg-white/5 border border-white/15 font-mono text-[10px] text-white/80">MULTI-CHANNEL</span>
-            </div>
-            <div id="platform-bars" class="space-y-3.5"></div>
-          </div>
-        </div>
-
-        <!-- Upcoming Content Queue -->
-        <div class="hud-card rounded-2xl p-6">
-          <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
-            <div>
-              <h2 class="text-sm font-bold tracking-wider text-white uppercase">ANTRIAN KONTEN TERDEKAT</h2>
-              <p class="font-mono text-[10px] text-white/50">DIURUTKAN BERDASARKAN TANGGAL TARGET UPLOAD</p>
-            </div>
-            <button
-              type="button"
-              onclick="window.switchTab('engine')"
-              class="btn-mint px-4 py-2 rounded-lg font-mono text-[11px] uppercase tracking-wider"
-            >
-              + BUAT KONTEN BARU
-            </button>
-          </div>
-          <div id="upcoming-list" class="divide-y divide-white/10"></div>
-        </div>
-      </section>
-
-      <!-- ===================================================== -->
-      <!-- TAB 02: BANK KONTEN DATABASE                          -->
-      <!-- ===================================================== -->
-      <section id="view-bank" class="hidden space-y-6">
-        <!-- Filter & Action Header -->
-        <div class="hud-card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
-          <div class="flex flex-wrap items-center gap-3 flex-1">
-            <input
-              id="filter-search"
-              type="text"
-              oninput="window.renderBankTable()"
-              placeholder="Cari ID, Hook, atau isi skrip..."
-              class="bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/40 outline-none w-full sm:w-64"
-            />
-            <select
-              id="filter-platform"
-              onchange="window.renderBankTable()"
-              class="bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
-            >
-              <option value="ALL">Semua Platform</option>
-              <option value="TikTok">TikTok</option>
-              <option value="Instagram">Instagram</option>
-              <option value="YouTube Shorts">YouTube Shorts</option>
-              <option value="Threads / X">Threads / X</option>
-            </select>
-            <select
-              id="filter-status"
-              onchange="window.renderBankTable()"
-              class="bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none"
-            >
-              <option value="ALL">Semua Status</option>
-              <option value="Ide Mentah">Ide Mentah</option>
-              <option value="Scripting">Scripting</option>
-              <option value="Editing">Editing</option>
-              <option value="Ready">Ready</option>
-              <option value="Published">Published</option>
-            </select>
-          </div>
-
-          <div class="flex items-center gap-2.5">
-            <button
-              type="button"
-              onclick="window.syncFromSupabase(true)"
-              class="px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/15 hover:border-emerald-400/50 text-xs font-mono text-white/80 hover:text-emerald-300 transition cursor-pointer"
-            >
-              ↻ REFRESH CLOUD
-            </button>
-            <button
-              type="button"
-              onclick="window.switchTab('engine')"
-              class="btn-mint px-4 py-2.5 rounded-xl font-mono text-xs uppercase"
-            >
-              + TAMBAH UNIT
-            </button>
-          </div>
-        </div>
-
-        <!-- Database Table -->
-        <div class="hud-card rounded-2xl overflow-hidden">
-          <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-white/10 bg-black/60 font-mono text-[10px] tracking-wider text-emerald-300 uppercase">
-                  <th class="py-3.5 px-4">ID</th>
-                  <th class="py-3.5 px-4">TARGET</th>
-                  <th class="py-3.5 px-4">PILAR & PLATFORM</th>
-                  <th class="py-3.5 px-4">HOOK UTAMA</th>
-                  <th class="py-3.5 px-4">SKRIP LENGKAP</th>
-                  <th class="py-3.5 px-4">STATUS</th>
-                  <th class="py-3.5 px-4 text-right">AKSI</th>
-                </tr>
-              </thead>
-              <tbody id="bank-table-body" class="divide-y divide-white/10 text-xs"></tbody>
-            </table>
-          </div>
-        </div>
-      </section>
-
-      <!-- ===================================================== -->
-      <!-- TAB 03: CORE ENGINE (AI ARCHITECT)                    -->
-      <!-- ===================================================== -->
-      <section id="view-engine" class="hidden space-y-6">
-        <!-- Mode Switcher -->
-        <div class="hud-card rounded-2xl p-5 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h2 class="text-base font-bold text-white flex items-center gap-2">
-              <span>CORE ENGINE // ARSITEK KONTEN AI</span>
-              <span class="w-2 h-2 rounded-full bg-emerald-400 blink-fast"></span>
-            </h2>
-            <p class="text-xs text-white/60 mt-0.5">Ubah catatan mentah menjadi struktur konten siap produksi atau bangun skrip utuh dari nol.</p>
-          </div>
-
-          <div class="flex items-center gap-2 bg-black/70 p-1 rounded-xl border border-white/10">
-            <button
-              type="button"
-              id="btn-mode-a"
-              onclick="window.setEngineMode('A')"
-              class="px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer bg-emerald-400 text-black"
-            >
-              MODE A // PROSES SKRIP JADI
-            </button>
-            <button
-              type="button"
-              id="btn-mode-b"
-              onclick="window.setEngineMode('B')"
-              class="px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer text-white/70 hover:text-white"
-            >
-              MODE B // GENERATE DARI NOL
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          <!-- Left Input Console -->
-          <div class="lg:col-span-6 hud-card rounded-2xl p-6 space-y-4">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1.5">PILAR KONTEN</label>
-                <select id="eng-pillar" class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-                  <option value="Habit Systems">Habit Systems</option>
-                  <option value="Mindset & Psikologi">Mindset & Psikologi</option>
-                  <option value="Produktivitas & Fokus">Produktivitas & Fokus</option>
-                  <option value="Self-Mastery & Disiplin">Self-Mastery & Disiplin</option>
-                  <option value="Refleksi & Stoikisme">Refleksi & Stoikisme</option>
-                </select>
-              </div>
-              <div>
-                <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1.5">PLATFORM TARGET</label>
-                <select id="eng-platform" class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-                  <option value="TikTok">TikTok</option>
-                  <option value="Instagram">Instagram</option>
-                  <option value="YouTube Shorts">YouTube Shorts</option>
-                  <option value="Threads / X">Threads / X</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div>
-                <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1.5">FORMAT KONTEN</label>
-                <select id="eng-format" class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-                  <option value="Video Pendek 3-60s">Video Pendek 3-60s</option>
-                  <option value="Carousel">Carousel</option>
-                  <option value="Talking Head Edukasi">Talking Head Edukasi</option>
-                  <option value="Storytelling Visual">Storytelling Visual</option>
-                </select>
-              </div>
-              <div>
-                <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1.5">TARGET UPLOAD (DD-MM-YYYY)</label>
-                <div class="flex gap-1.5">
-                  <input
-                    id="eng-date-text"
-                    type="text"
-                    placeholder="25-11-2026"
-                    class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white outline-none"
-                  />
-                  <input
-                    id="eng-date-picker"
-                    type="date"
-                    onchange="window.syncPickerToText(this.value)"
-                    class="bg-black/70 border border-white/15 rounded-xl px-2 text-xs text-white outline-none cursor-pointer"
-                    title="Pilih dari Kalender"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Mode A Field -->
-            <div id="mode-a-fields" class="space-y-3">
-              <label class="block font-mono text-[10px] text-emerald-300 uppercase">TEMPEL SKRIP JADI / DRAF MENTAH KAMU</label>
-              <textarea
-                id="eng-raw-script"
-                rows="8"
-                placeholder="Tempelkan skrip panjang, catatan voice note, atau konsep yang sudah kamu tulis di sini. Engine akan mengekstrak Hook, Kerangka Alur, Full Script rapi, dan CTA..."
-                class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl p-4 text-xs text-white leading-relaxed outline-none"
-              ></textarea>
-            </div>
-
-            <!-- Mode B Field -->
-            <div id="mode-b-fields" class="hidden space-y-3">
-              <label class="block font-mono text-[10px] text-emerald-300 uppercase">TOPIK / IDE SINGKAT (GENERATE DARI NOL)</label>
-              <textarea
-                id="eng-topic-prompt"
-                rows="5"
-                placeholder="Contoh: Kenapa orang pintar sering overthinking sebelum mulai bertindak, dan cara memutusnya dengan aturan 5 menit..."
-                class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl p-4 text-xs text-white leading-relaxed outline-none"
-              ></textarea>
-              <div>
-                <label class="block font-mono text-[10px] text-white/60 uppercase mb-1.5">GAYA PENYAMPAIAN</label>
-                <select id="eng-tone" class="w-full bg-black/70 border border-white/15 focus:border-emerald-400 rounded-xl px-3.5 py-2.5 text-xs text-white outline-none">
-                  <option value="Tenang, Reflektif & Menyentuh">Tenang, Reflektif & Menyentuh</option>
-                  <option value="Tegas, Logis & Tamparan Realita">Tegas, Logis & Tamparan Realita</option>
-                  <option value="Praktis, Taktis & Step-by-Step">Praktis, Taktis & Step-by-Step</option>
-                </select>
-              </div>
-            </div>
-
-            <button
-              type="button"
-              id="btn-run-engine"
-              onclick="window.runCoreEngine()"
-              class="w-full btn-mint py-3.5 rounded-xl font-mono text-xs tracking-widest uppercase flex items-center justify-center gap-2"
-            >
-              <span id="btn-run-label">⚡ PROSES KE STAGING PREVIEW</span>
-            </button>
-          </div>
-
-          <!-- Right Staging Preview Console -->
-          <div class="lg:col-span-6 hud-card rounded-2xl p-6 flex flex-col justify-between">
-            <div>
-              <div class="flex items-center justify-between pb-4 mb-4 border-b border-white/10">
-                <div>
-                  <span class="font-mono text-[10px] text-emerald-300 tracking-widest uppercase">STAGING PREVIEW // VALIDASI</span>
-                  <h3 class="text-sm font-bold text-white">HASIL ARSITEKTUR KONTEN</h3>
-                </div>
-                <span id="staging-id-badge" class="px-2.5 py-1 rounded bg-white/5 border border-white/15 font-mono text-[11px] text-white/70">STANDBY</span>
-              </div>
-
-              <!-- Empty State -->
-              <div id="staging-empty" class="py-16 text-center space-y-3">
-                <div class="w-12 h-12 rounded-2xl bg-emerald-950/70 border border-emerald-400/30 mx-auto flex items-center justify-center text-emerald-300">
-                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 blink-slow"></span>
-                </div>
-                <p class="font-mono text-xs text-white/70">MENUNGGU INPUT DARI CONSOLE KIRI</p>
-                <p class="text-[11px] text-white/45 max-w-xs mx-auto">Hasil pemrosesan akan tampil di sini untuk kamu periksa sebelum masuk ke Bank Konten.</p>
-              </div>
-
-              <!-- Populated Staging Form -->
-              <div id="staging-result" class="hidden space-y-3.5">
-                <div>
-                  <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">HOOK UTAMA</label>
-                  <input id="stg-hook" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white font-medium outline-none" />
-                </div>
-
-                <div>
-                  <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">KERANGKA / RINGKASAN ALUR</label>
-                  <textarea id="stg-script" rows="3" class="w-full bg-black/70 border border-white/15 rounded-xl p-3 text-xs text-white/90 outline-none"></textarea>
-                </div>
-
-                <div>
-                  <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">SKRIP LENGKAP (FULL SCRIPT SIAP REKAM/SLIDE)</label>
-                  <textarea id="stg-full-script" rows="6" class="w-full bg-black/70 border border-white/15 rounded-xl p-3 text-xs text-white font-mono leading-relaxed outline-none"></textarea>
-                </div>
-
-                <div>
-                  <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">CALL TO ACTION (CTA)</label>
-                  <input id="stg-cta" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white outline-none" />
-                </div>
-              </div>
-            </div>
-
-            <!-- Two-Step Confirmation Buttons -->
-            <div id="staging-actions" class="hidden pt-5 mt-5 border-t border-white/10 grid grid-cols-3 gap-2.5">
-              <button
-                type="button"
-                onclick="window.cancelStaging()"
-                class="py-2.5 px-3 rounded-xl bg-white/5 hover:bg-red-500/20 border border-white/15 hover:border-red-400/40 font-mono text-[11px] text-white/80 hover:text-red-200 transition cursor-pointer"
-              >
-                ✕ CANCEL
-              </button>
-              <button
-                type="button"
-                onclick="window.runCoreEngine()"
-                class="py-2.5 px-3 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-400/40 font-mono text-[11px] text-emerald-200 transition cursor-pointer"
-              >
-                ↻ BIKIN ULANG
-              </button>
-              <button
-                type="button"
-                onclick="window.commitStagingToBank()"
-                class="btn-mint py-2.5 px-3 rounded-xl font-mono text-[11px] uppercase"
-              >
-                ✓ MASUK BANK
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- MODAL: INSPECT / EDIT CONTENT ITEM                        -->
-  <!-- ========================================================= -->
-  <div id="inspect-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="hud-glass rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-white/10">
-        <div>
-          <span id="modal-item-id" class="font-mono text-xs text-emerald-300 font-bold">TLB-001</span>
-          <h3 class="text-sm font-bold text-white">INSPECT & EDIT UNIT KONTEN</h3>
-        </div>
-        <button type="button" onclick="window.closeInspectModal()" class="text-white/60 hover:text-white font-mono text-sm px-2 py-1 cursor-pointer">✕</button>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div>
-          <label class="block font-mono text-[10px] text-white/60 uppercase mb-1">TARGET UPLOAD</label>
-          <input id="edit-date" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs font-mono text-white outline-none" />
-        </div>
-        <div>
-          <label class="block font-mono text-[10px] text-white/60 uppercase mb-1">PLATFORM</label>
-          <select id="edit-platform" class="w-full bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none">
-            <option value="TikTok">TikTok</option>
-            <option value="Instagram">Instagram</option>
-            <option value="YouTube Shorts">YouTube Shorts</option>
-            <option value="Threads / X">Threads / X</option>
-          </select>
-        </div>
-        <div>
-          <label class="block font-mono text-[10px] text-white/60 uppercase mb-1">STATUS PRODUKSI</label>
-          <select id="edit-status" class="w-full bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none">
-            <option value="Ide Mentah">Ide Mentah</option>
-            <option value="Scripting">Scripting</option>
-            <option value="Editing">Editing</option>
-            <option value="Ready">Ready</option>
-            <option value="Published">Published</option>
-          </select>
-        </div>
-      </div>
-
-      <div>
-        <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">HOOK UTAMA</label>
-        <input id="edit-hook" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2 text-xs text-white outline-none" />
-      </div>
-
-      <div>
-        <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">KERANGKA ALUR</label>
-        <textarea id="edit-script" rows="3" class="w-full bg-black/70 border border-white/15 rounded-xl p-3 text-xs text-white/90 outline-none"></textarea>
-      </div>
-
-      <div>
-        <div class="flex items-center justify-between mb-1">
-          <label class="font-mono text-[10px] text-emerald-300 uppercase">SKRIP LENGKAP (FULL SCRIPT)</label>
-          <button type="button" onclick="window.copyFullScript()" class="font-mono text-[10px] text-emerald-300 hover:underline cursor-pointer">📋 SALIN SKRIP</button>
-        </div>
-        <textarea id="edit-full-script" rows="7" class="w-full bg-black/70 border border-white/15 rounded-xl p-3 text-xs font-mono text-white leading-relaxed outline-none"></textarea>
-      </div>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div>
-          <label class="block font-mono text-[10px] text-white/60 uppercase mb-1">CALL TO ACTION (CTA)</label>
-          <input id="edit-cta" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none" />
-        </div>
-        <div>
-          <label class="block font-mono text-[10px] text-white/60 uppercase mb-1">CATATAN / LINK DRAF</label>
-          <input id="edit-notes" type="text" placeholder="Link Canva / CapCut / Catatan..." class="w-full bg-black/70 border border-white/15 rounded-xl px-3 py-2 text-xs text-white outline-none" />
-        </div>
-      </div>
-
-      <div class="pt-3 border-t border-white/10 flex items-center justify-between">
-        <button type="button" onclick="window.deleteCurrentItem()" class="px-4 py-2 rounded-xl bg-red-500/15 hover:bg-red-500/30 border border-red-400/30 font-mono text-xs text-red-200 cursor-pointer">
-          HAPUS UNIT
-        </button>
-        <div class="flex items-center gap-2">
-          <button type="button" onclick="window.closeInspectModal()" class="px-4 py-2 rounded-xl bg-white/5 border border-white/15 font-mono text-xs text-white/75 cursor-pointer">
-            TUTUP
-          </button>
-          <button type="button" onclick="window.saveEditedItem()" class="btn-mint px-5 py-2 rounded-xl font-mono text-xs uppercase">
-            SIMPAN PERUBAHAN
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- MODAL: SETTINGS (GEMINI API KEY & SUPABASE)               -->
-  <!-- ========================================================= -->
-  <div id="settings-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4">
-    <div class="hud-glass rounded-2xl max-w-md w-full p-6 space-y-4">
-      <div class="flex items-center justify-between pb-3 border-b border-white/10">
-        <h3 class="text-sm font-bold text-white font-mono">KONFIGURASI ENGINE & CLOUD</h3>
-        <button type="button" onclick="window.closeSettingsModal()" class="text-white/60 hover:text-white font-mono text-sm cursor-pointer">✕</button>
-      </div>
-
-      <div>
-        <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">GEMINI API KEY (AIza...)</label>
-        <input id="cfg-gemini-key" type="password" placeholder="Tempel kunci AIza... dari Google AI Studio" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2.5 text-xs font-mono text-white outline-none" />
-        <p class="text-[10px] text-white/50 mt-1">Jika kosong atau format token sesi, sistem otomatis memakai Built-in Content Architect Engine tanpa macet.</p>
-      </div>
-
-      <div>
-        <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">SUPABASE PROJECT URL</label>
-        <input id="cfg-sb-url" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2 text-xs font-mono text-white outline-none" />
-      </div>
-
-      <div>
-        <label class="block font-mono text-[10px] text-emerald-300 uppercase mb-1">SUPABASE PUBLISHABLE KEY</label>
-        <input id="cfg-sb-key" type="text" class="w-full bg-black/70 border border-white/15 rounded-xl px-3.5 py-2 text-xs font-mono text-white outline-none" />
-      </div>
-
-      <div class="pt-3 border-t border-white/10 flex justify-end gap-2">
-        <button type="button" onclick="window.closeSettingsModal()" class="px-4 py-2 rounded-xl bg-white/5 border border-white/15 font-mono text-xs text-white/75 cursor-pointer">BATAL</button>
-        <button type="button" onclick="window.saveSettings()" class="btn-mint px-5 py-2 rounded-xl font-mono text-xs uppercase">SIMPAN & SINKRON</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ========================================================= -->
-  <!-- CORE APPLICATION LOGIC                                    -->
-  <!-- ========================================================= -->
-  <script>
-    (function () {
-      const DEFAULT_SB_URL = 'https://cjvuwebpeoqzmrbjsjas.supabase.co';
-      const DEFAULT_SB_KEY = 'sb_publishable_Jd5R0k7PFrLqHppW7q-hww_K4MxcduE';
-      const DEFAULT_GEMINI_KEY = 'AQ.Ab8RN6JGe5se4ouLX0V5Avk5afzQsMFEgqwZzm5wyltkhoFdzg';
-      const STORAGE_KEY = 'tlb_content_bank_v2';
-
-      const SEED_DATA = [
-        {
-          id: 'TLB-001',
-          target_date: '20-11-2026',
-          pillar: 'Habit Systems',
-          platform: 'Instagram',
-          format: 'Carousel',
-          hook: 'Jangan Mengandalkan Motivasi untuk Membangun Kebiasaan',
-          script: 'Slide 1: Hook — Jangan mengandalkan motivasi.\nSlide 2: Masalah — Motivasi naik turun saat lelah.\nSlide 3: Solusi 1 — Mulai dari aturan 2 menit.\nSlide 4: Solusi 2 — Desain pemicu visual di lingkungan.\nSlide 5: Closing & CTA.',
-          full_script: '[SLIDE 1 - COVER]\nJangan mengandalkan motivasi untuk membangun kebiasaan.\n\n[SLIDE 2 - REALITA]\nMotivasi itu sifatnya emosional. Hari ini tinggi, besok hilang saat kamu pulang dalam keadaan lelah.\n\n[SLIDE 3 - ATURAN 2 MENIT]\nPerkecil kebiasaan barumu sampai terasa terlalu mudah untuk ditolak. Bukan baca 30 halaman, tapi baca 1 halaman.\n\n[SLIDE 4 - DESAIN LINGKUNGAN]\nLetakkan pemicu visual di tempat yang langsung terlihat. Taruh buku di atas bantal, siapkan botol minum di meja kerja.\n\n[SLIDE 5 - CLOSING]\nSistem yang baik mengalahkan niat yang kuat. Simpan panduan ini!',
-          cta: 'Simpan sebagai panduan dan bagikan kepada teman yang sedang membangun kebiasaan baik.',
-          status: 'Scripting',
-          notes: ''
-        },
-        {
-          id: 'TLB-002',
-          target_date: '22-11-2026',
-          pillar: 'Mindset & Psikologi',
-          platform: 'TikTok',
-          format: 'Video Pendek 3-60s',
-          hook: 'Kamu Tidak Harus Mengubah Seluruh Hidup dalam Satu Malam',
-          script: '0-5s: Hook perubahan bertahap.\n5-20s: Masalah target terlalu ekstrem di hari pertama.\n20-45s: Fokus satu kebiasaan kecil sampai jadi identitas.\n45-60s: Closing arah lebih penting dari kecepatan.',
-          full_script: '(00:00 - 00:05) [Tatap kamera tenang]\n"Kamu tidak harus mengubah seluruh hidupmu dalam satu malam."\n\n(00:05 - 00:20) [B-roll jurnal / kopi]\n"Banyak dari kita berhenti di minggu pertama bukan karena malas, tapi karena memaksa berubah 180 derajat sekaligus."\n\n(00:20 - 00:45) [Kembali ke kamera]\n"Pilih satu kebiasaan kecil yang saking ringannya kamu hampir tidak punya alasan untuk menolaknya. Lakukan itu sampai menjadi bagian dari identitasmu."\n\n(00:45 - 00:55) [Closing]\n"Fokus pada arah langkahmu, bukan kecepatannya. Kebiasaan kecil apa yang ingin kamu mulai hari ini?"',
-          cta: 'Kebiasaan kecil apa yang ingin kamu mulai hari ini? Tulis di komentar.',
-          status: 'Ide Mentah',
-          notes: ''
-        }
-      ];
-
-      let contentBank = [];
-      let currentEngineMode = 'A';
-      let currentEditingId = null;
-      let supabaseClient = null;
-
-      function showToast(msg, type = 'success') {
-        const container = document.getElementById('toast-container');
-        if (!container) return;
-        const el = document.createElement('div');
-        const border = type === 'error' ? 'border-red-400/50 text-red-200' : 'border-emerald-400/50 text-emerald-200';
-        el.className = `px-4 py-2.5 rounded-xl bg-black/90 backdrop-blur-xl border ${border} font-mono text-xs shadow-2xl transition-all`;
-        el.textContent = msg;
-        container.appendChild(el);
-        setTimeout(() => {
-          el.style.opacity = '0';
-          setTimeout(() => el.remove(), 300);
-        }, 3000);
-      }
-
-      function getConfig() {
-        return {
-          sbUrl: localStorage.getItem('tlb_sb_url') || DEFAULT_SB_URL,
-          sbKey: localStorage.getItem('tlb_sb_key') || DEFAULT_SB_KEY,
-          geminiKey: localStorage.getItem('tlb_gemini_key') || DEFAULT_GEMINI_KEY
-        };
-      }
-
-      function initSupabase() {
-        try {
-          const cfg = getConfig();
-          if (window.supabase && typeof window.supabase.createClient === 'function' && cfg.sbUrl && cfg.sbKey) {
-            supabaseClient = window.supabase.createClient(cfg.sbUrl, cfg.sbKey);
-          }
-        } catch (err) {
-          console.warn('Supabase SDK init skipped:', err);
-          supabaseClient = null;
-        }
-      }
-
-      function updateSyncIndicator(online, labelText) {
-        const dot = document.getElementById('sync-dot');
-        const label = document.getElementById('sync-label');
-        if (!dot || !label) return;
-        dot.className = online
-          ? 'w-2 h-2 rounded-full bg-emerald-400 blink-fast'
-          : 'w-2 h-2 rounded-full bg-amber-400 blink-fast';
-        label.textContent = labelText;
-      }
-
-      function saveLocalBank() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(contentBank));
-        } catch (e) {}
-      }
-
-      function loadLocalBank() {
-        try {
-          const raw = localStorage.getItem(STORAGE_KEY);
-          if (raw) {
-            const parsed = JSON.parse(raw);
-            if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-          }
-        } catch (e) {}
-        return [...SEED_DATA];
-      }
-
-      function normalizeDateDisplay(dateStr) {
-        if (!dateStr) return '25-11-2026';
-        if (/^\d{4}-\d{2}-\d{2}$/.test(dateStr)) {
-          const [y, m, d] = dateStr.split('-');
-          return `${d}-${m}-${y}`;
-        }
-        return dateStr;
-      }
-
-      window.syncFromSupabase = async function (notify = false) {
-        contentBank = loadLocalBank();
-        renderAll();
-
-        if (!supabaseClient) {
-          updateSyncIndicator(false, 'LOCAL STORAGE MODE');
-          return;
-        }
-
-        try {
-          const { data, error } = await supabaseClient
-            .from('bank_konten')
-            .select('*')
-            .order('id', { ascending: true });
-
-          if (error) throw error;
-
-          if (Array.isArray(data) && data.length > 0) {
-            contentBank = data.map(row => ({
-              id: row.id,
-              target_date: normalizeDateDisplay(row.target_date),
-              pillar: row.pillar || 'Habit Systems',
-              platform: row.platform || 'TikTok',
-              format: row.format || 'Video Pendek 3-60s',
-              hook: row.hook || '',
-              script: row.script || '',
-              full_script: row.full_script || row.script || '',
-              cta: row.cta || '',
-              status: row.status || 'Ide Mentah',
-              notes: row.notes || ''
-            }));
-            saveLocalBank();
-            renderAll();
-          }
-          updateSyncIndicator(true, 'SUPABASE SYNCED');
-          if (notify) showToast('✓ Sinkronisasi Supabase berhasil');
-        } catch (err) {
-          console.warn('Supabase sync fallback to local:', err);
-          updateSyncIndicator(false, 'CLOUD STANDBY (LOCAL)');
-          if (notify) showToast('Memakai penyimpanan lokal (cek tabel Supabase)', 'error');
-        }
-      };
-
-      async function upsertItemToCloud(item) {
-        saveLocalBank();
-        if (!supabaseClient) return;
-        try {
-          const payload = {
-            id: item.id,
-            target_date: item.target_date,
-            pillar: item.pillar,
-            platform: item.platform,
-            format: item.format,
-            hook: item.hook,
-            script: item.script,
-            full_script: item.full_script,
-            cta: item.cta,
-            status: item.status,
-            notes: item.notes || ''
-          };
-          const { error } = await supabaseClient.from('bank_konten').upsert(payload);
-          if (!error) {
-            updateSyncIndicator(true, 'SUPABASE SYNCED');
-          }
-        } catch (e) {
-          console.warn('Cloud upsert skipped:', e);
-        }
-      }
-
-      async function deleteItemFromCloud(id) {
-        saveLocalBank();
-        if (!supabaseClient) return;
-        try {
-          await supabaseClient.from('bank_konten').delete().eq('id', id);
-        } catch (e) {}
-      }
-
-      // Navigation Handlers
-      window.enterWorkspace = function () {
-        const gw = document.getElementById('gateway-screen');
-        const ws = document.getElementById('workspace-screen');
-        if (gw) gw.classList.add('hidden');
-        if (ws) ws.classList.remove('hidden');
-        window.switchTab('dashboard');
-      };
-
-      window.exitWorkspace = function () {
-        const gw = document.getElementById('gateway-screen');
-        const ws = document.getElementById('workspace-screen');
-        if (ws) ws.classList.add('hidden');
-        if (gw) gw.classList.remove('hidden');
-      };
-
-      window.switchTab = function (tabName) {
-        ['dashboard', 'bank', 'engine'].forEach(name => {
-          const view = document.getElementById(`view-${name}`);
-          const btn = document.getElementById(`nav-${name}`);
-          if (view) view.classList.toggle('hidden', name !== tabName);
-          if (btn) {
-            if (name === tabName) {
-              btn.className = 'nav-btn px-3 sm:px-4 py-2 rounded-lg font-mono text-[11px] sm:text-xs font-semibold tracking-wider transition cursor-pointer bg-emerald-400 text-black';
-            } else {
-              btn.className = 'nav-btn px-3 sm:px-4 py-2 rounded-lg font-mono text-[11px] sm:text-xs font-semibold tracking-wider transition cursor-pointer text-white/70 hover:text-white';
-            }
-          }
-        });
-        renderAll();
-      };
-
-      // Rendering Dashboard & Bank Table
-      function renderDashboard() {
-        const total = contentBank.length;
-        const published = contentBank.filter(i => i.status === 'Published' || i.status === 'Ready').length;
-        const progress = contentBank.filter(i => i.status === 'Scripting' || i.status === 'Editing').length;
-        const ideas = contentBank.filter(i => i.status === 'Ide Mentah').length;
-
-        const elTotal = document.getElementById('stat-total');
-        const elPub = document.getElementById('stat-published');
-        const elProg = document.getElementById('stat-progress');
-        const elIdeas = document.getElementById('stat-ideas');
-        if (elTotal) elTotal.textContent = total;
-        if (elPub) elPub.textContent = published;
-        if (elProg) elProg.textContent = progress;
-        if (elIdeas) elIdeas.textContent = ideas;
-
-        // Pillar distribution
-        const pillarCounts = {};
-        contentBank.forEach(item => {
-          pillarCounts[item.pillar] = (pillarCounts[item.pillar] || 0) + 1;
-        });
-        const pillarContainer = document.getElementById('pillar-bars');
-        if (pillarContainer) {
-          const entries = Object.entries(pillarCounts);
-          pillarContainer.innerHTML = entries.length === 0
-            ? '<p class="text-xs text-white/40">Belum ada data konten.</p>'
-            : entries.map(([pillar, count]) => {
-                const pct = Math.round((count / Math.max(total, 1)) * 100);
-                return `
-                  <div>
-                    <div class="flex justify-between text-xs mb-1">
-                      <span class="text-white/85 font-medium">${pillar}</span>
-                      <span class="font-mono text-emerald-300">${count} unit (${pct}%)</span>
-                    </div>
-                    <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div class="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-300" style="width: ${pct}%"></div>
-                    </div>
-                  </div>
-                `;
-              }).join('');
-        }
-
-        // Platform distribution
-        const platCounts = {};
-        contentBank.forEach(item => {
-          platCounts[item.platform] = (platCounts[item.platform] || 0) + 1;
-        });
-        const platContainer = document.getElementById('platform-bars');
-        if (platContainer) {
-          const entries = Object.entries(platCounts);
-          platContainer.innerHTML = entries.length === 0
-            ? '<p class="text-xs text-white/40">Belum ada data platform.</p>'
-            : entries.map(([plat, count]) => {
-                const pct = Math.round((count / Math.max(total, 1)) * 100);
-                return `
-                  <div>
-                    <div class="flex justify-between text-xs mb-1">
-                      <span class="text-white/85 font-medium">${plat}</span>
-                      <span class="font-mono text-white/80">${count} unit (${pct}%)</span>
-                    </div>
-                    <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden">
-                      <div class="h-full rounded-full bg-gradient-to-r from-white/70 to-emerald-300" style="width: ${pct}%"></div>
-                    </div>
-                  </div>
-                `;
-              }).join('');
-        }
-
-        // Upcoming queue
-        const upcomingEl = document.getElementById('upcoming-list');
-        if (upcomingEl) {
-          const sorted = [...contentBank].slice(0, 5);
-          upcomingEl.innerHTML = sorted.length === 0
-            ? '<p class="py-6 text-center text-xs text-white/40">Belum ada antrian konten.</p>'
-            : sorted.map(item => `
-                <div class="py-3.5 flex flex-wrap items-center justify-between gap-3">
-                  <div class="flex items-center gap-3 min-w-0">
-                    <span class="px-2.5 py-1 rounded bg-emerald-950 border border-emerald-400/30 font-mono text-[11px] text-emerald-300 shrink-0">${item.id}</span>
-                    <div class="truncate">
-                      <p class="text-xs sm:text-sm font-semibold text-white truncate">${item.hook}</p>
-                      <p class="font-mono text-[10px] text-white/50">${item.platform} • ${item.format} • Target: ${item.target_date}</p>
-                    </div>
-                  </div>
-                  <div class="flex items-center gap-2 shrink-0">
-                    <span class="px-2.5 py-1 rounded-full bg-white/5 border border-white/15 font-mono text-[10px] text-white/80">${item.status}</span>
-                    <button type="button" onclick="window.openInspectModal('${item.id}')" class="px-3 py-1 rounded-lg bg-emerald-400/15 hover:bg-emerald-400 text-emerald-300 hover:text-black font-mono text-[10px] font-semibold transition cursor-pointer">
-                      INSPECT
-                    </button>
-                  </div>
-                </div>
-              `).join('');
-        }
-      }
-
-      window.renderBankTable = function () {
-        const tbody = document.getElementById('bank-table-body');
-        if (!tbody) return;
-
-        const q = (document.getElementById('filter-search')?.value || '').toLowerCase();
-        const platFilter = document.getElementById('filter-platform')?.value || 'ALL';
-        const statusFilter = document.getElementById('filter-status')?.value || 'ALL';
-
-        const filtered = contentBank.filter(item => {
-          const matchQ = !q ||
-            item.id.toLowerCase().includes(q) ||
-            item.hook.toLowerCase().includes(q) ||
-            (item.full_script || '').toLowerCase().includes(q);
-          const matchPlat = platFilter === 'ALL' || item.platform === platFilter;
-          const matchStat = statusFilter === 'ALL' || item.status === statusFilter;
-          return matchQ && matchPlat && matchStat;
-        });
-
-        if (filtered.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="7" class="py-10 text-center text-white/40 font-mono text-xs">Tidak ada unit konten yang cocok dengan filter.</td></tr>`;
-          return;
-        }
-
-        tbody.innerHTML = filtered.map(item => `
-          <tr class="hover:bg-white/[0.03] transition">
-            <td class="py-3.5 px-4 font-mono text-emerald-300 font-semibold whitespace-nowrap">${item.id}</td>
-            <td class="py-3.5 px-4 font-mono text-white/75 whitespace-nowrap">${item.target_date}</td>
-            <td class="py-3.5 px-4">
-              <div class="text-white font-medium">${item.pillar}</div>
-              <div class="font-mono text-[10px] text-white/50">${item.platform} • ${item.format}</div>
-            </td>
-            <td class="py-3.5 px-4 max-w-xs">
-              <p class="text-white font-medium line-clamp-2">${item.hook}</p>
-            </td>
-            <td class="py-3.5 px-4 max-w-xs">
-              <p class="text-white/60 text-[11px] line-clamp-2 font-mono">${(item.full_script || item.script || '').replace(/\n/g, ' ')}</p>
-            </td>
-            <td class="py-3.5 px-4 whitespace-nowrap">
-              <span class="px-2.5 py-1 rounded-full bg-emerald-950/80 border border-emerald-400/30 font-mono text-[10px] text-emerald-200">${item.status}</span>
-            </td>
-            <td class="py-3.5 px-4 text-right whitespace-nowrap">
-              <button type="button" onclick="window.openInspectModal('${item.id}')" class="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-emerald-400 text-white hover:text-black font-mono text-[10px] font-semibold transition cursor-pointer">
-                INSPECT / EDIT
-              </button>
-            </td>
-          </tr>
-        `).join('');
-      };
-
-      function renderAll() {
-        renderDashboard();
-        window.renderBankTable();
-      }
-
-      // Core Engine Logic (Mode A & Mode B)
-      window.setEngineMode = function (mode) {
-        currentEngineMode = mode;
-        const btnA = document.getElementById('btn-mode-a');
-        const btnB = document.getElementById('btn-mode-b');
-        const fieldsA = document.getElementById('mode-a-fields');
-        const fieldsB = document.getElementById('mode-b-fields');
-
-        if (mode === 'A') {
-          btnA.className = 'px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer bg-emerald-400 text-black';
-          btnB.className = 'px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer text-white/70 hover:text-white';
-          fieldsA.classList.remove('hidden');
-          fieldsB.classList.add('hidden');
-        } else {
-          btnB.className = 'px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer bg-emerald-400 text-black';
-          btnA.className = 'px-4 py-2 rounded-lg font-mono text-xs font-semibold transition cursor-pointer text-white/70 hover:text-white';
-          fieldsB.classList.remove('hidden');
-          fieldsA.classList.add('hidden');
-        }
-      };
-
-      window.syncPickerToText = function (isoDate) {
-        if (!isoDate) return;
-        const [y, m, d] = isoDate.split('-');
-        const txt = document.getElementById('eng-date-text');
-        if (txt) txt.value = `${d}-${m}-${y}`;
-      };
-
-      function getNextId() {
-        let maxNum = 0;
-        contentBank.forEach(item => {
-          const m = String(item.id).match(/TLB-(\d+)/i);
-          if (m) maxNum = Math.max(maxNum, parseInt(m[1], 10));
-        });
-        return `TLB-${String(maxNum + 1).padStart(3, '0')}`;
-      }
-
-      function buildLocalStructuredOutput(mode, pillar, platform, format, rawInput, tone) {
-        const cleanLines = rawInput.split('\n').map(l => l.trim()).filter(Boolean);
-        if (mode === 'A') {
-          const firstLine = cleanLines[0] || `Rahasia Membangun ${pillar} Tanpa Terasa Berat`;
-          const hook = firstLine.length > 90 ? firstLine.slice(0, 87) + '...' : firstLine;
-          const summary = cleanLines.slice(0, 4).map((l, idx) => `Bagian ${idx + 1}: ${l.slice(0, 75)}`).join('\n') ||
-            `1. Hook Pembuka\n2. Validasi Masalah Utama\n3. Langkah Praktis ${pillar}\n4. Penutup & Ajakan Bertindak`;
-          return {
-            hook,
-            script: summary,
-            full_script: rawInput,
-            cta: `Simpan konten ${pillar} ini dan bagikan ke temanmu yang sedang bertumbuh!`
-          };
-        } else {
-          const topic = rawInput || `Cara Konsisten Membangun ${pillar} Setiap Hari`;
-          if (format === 'Carousel') {
-            return {
-              hook: `${topic}: Panduan Praktis Agar Tidak Sekadar Wacana`,
-              script: `Slide 1: Cover Hook\nSlide 2: Kenapa kebanyakan orang gagal di minggu pertama\nSlide 3: Prinsip inti ${pillar}\nSlide 4: Langkah eksekusi harian\nSlide 5: Ringkasan & CTA`,
-              full_script: `[SLIDE 1 - COVER]\n${topic}\n\n[SLIDE 2 - MASALAH UMUM]\nKita sering terjebak ingin hasil instan tanpa membangun sistem harian yang menopangnya.\n\n[SLIDE 3 - PERGESERAN POLA PIKIR]\nGaya penyampaian: ${tone}.\nFokus pada langkah terkecil yang bisa diulang setiap hari tanpa menguras energi mental.\n\n[SLIDE 4 - EKSEKUSI 2 MENIT]\nMulai sekarang juga dari versi paling sederhana. Konsistensi selalu mengalahkan intensitas sesaat.\n\n[SLIDE 5 - CLOSING & CTA]\nSimpan slide ini sebagai pengingat harianmu!`,
-              cta: `Simpan carousel ini dan tulis di komentar langkah pertama yang mau kamu mulai hari ini!`
-            };
-          }
-          return {
-            hook: `Berhenti Menunda: ${topic}`,
-            script: `0-5s (Hook): ${topic}\n5-20s (Masalah): Jebakan perfeksionisme & overthinking\n20-45s (Solusi): Terapkan prinsip ${pillar} secara bertahap\n45-60s (CTA): Ajak audiens berkomitmen di komentar`,
-            full_script: `(00:00 - 00:05) [Hook - Tatap Kamera]\n"Kalau kamu masih sering merasa jalan di tempat soal ${topic.toLowerCase()}, dengar ini sebentar."\n\n(00:05 - 00:22) [Validasi Masalah]\n"Masalah utamanya bukan karena kamu kurang niat, tapi karena kamu membiarkan otakmu kewalahan dengan target yang terlalu besar di awal."\n\n(00:22 - 00:45) [Inti Solusi - ${tone}]\n"Dalam prinsip ${pillar}, perubahan nyata dimulai saat kamu menurunkan standar awal menjadi langkah kecil yang mustahil gagal dilakukan hari ini."\n\n(00:45 - 00:58) [Closing & CTA]\n"Mulai dari yang kecil, jaga ritmenya, dan biarkan waktu bekerja untukmu. Simpan video ini kalau kamu butuh pengingatnya!"`,
-            cta: `Simpan video ini dan tulis "MULAI" di komentar sebagai komitmen hari ini!`
-          };
-        }
-      }
-
-      window.runCoreEngine = async function () {
-        const pillar = document.getElementById('eng-pillar').value;
-        const platform = document.getElementById('eng-platform').value;
-        const format = document.getElementById('eng-format').value;
-        const rawInput = currentEngineMode === 'A'
-          ? document.getElementById('eng-raw-script').value.trim()
-          : document.getElementById('eng-topic-prompt').value.trim();
-        const tone = document.getElementById('eng-tone')?.value || 'Tenang, Reflektif & Menyentuh';
-
-        if (!rawInput) {
-          showToast(currentEngineMode === 'A' ? 'Tempelkan skrip jadi terlebih dahulu!' : 'Isi topik/ide konten terlebih dahulu!', 'error');
-          return;
-        }
-
-        const btnLabel = document.getElementById('btn-run-label');
-        if (btnLabel) btnLabel.textContent = '⏳ MEMPROSES ARSITEKTUR...';
-
-        let result = null;
-        const cfg = getConfig();
-
-        // Only call external Gemini REST API if key is a valid AIza... key
-        if (cfg.geminiKey && cfg.geminiKey.startsWith('AIza')) {
-          try {
-            const promptText = currentEngineMode === 'A'
-              ? `Kamu adalah Content Architect untuk brand pengembangan diri "Tumbuh Lebih Baik". Rapikan skrip mentah berikut menjadi JSON valid dengan key: "hook", "script" (ringkasan alur/slide), "full_script" (skrip lengkap siap baca), dan "cta". Pilar: ${pillar}, Platform: ${platform}, Format: ${format}.\n\nSkrip:\n${rawInput}`
-              : `Kamu adalah Content Architect untuk brand pengembangan diri "Tumbuh Lebih Baik". Buatkan konsep konten lengkap dari topik berikut dalam format JSON valid dengan key: "hook", "script" (kerangka alur), "full_script" (skrip lengkap siap rekam/carousel), dan "cta". Pilar: ${pillar}, Platform: ${platform}, Format: ${format}, Gaya: ${tone}.\n\nTopik: ${rawInput}`;
-
-            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(cfg.geminiKey)}`, {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({
-                contents: [{ parts: [{ text: promptText }] }],
-                generationConfig: { responseMimeType: 'application/json' }
-              })
-            });
-
-            if (resp.ok) {
-              const json = await resp.json();
-              const textOut = json?.candidates?.[0]?.content?.parts?.[0]?.text;
-              if (textOut) {
-                result = JSON.parse(textOut);
-              }
-            }
-          } catch (err) {
-            console.warn('Gemini API fallback to built-in engine:', err);
-          }
-        }
-
-        if (!result) {
-          result = buildLocalStructuredOutput(currentEngineMode, pillar, platform, format, rawInput, tone);
-        }
-
-        document.getElementById('staging-id-badge').textContent = getNextId();
-        document.getElementById('stg-hook').value = result.hook || '';
-        document.getElementById('stg-script').value = result.script || '';
-        document.getElementById('stg-full-script').value = result.full_script || '';
-        document.getElementById('stg-cta').value = result.cta || '';
-
-        document.getElementById('staging-empty').classList.add('hidden');
-        document.getElementById('staging-result').classList.remove('hidden');
-        document.getElementById('staging-actions').classList.remove('hidden');
-
-        if (btnLabel) btnLabel.textContent = '⚡ PROSES KE STAGING PREVIEW';
-        showToast('✓ Draf siap diperiksa di Staging Preview');
-      };
-
-      window.cancelStaging = function () {
-        document.getElementById('staging-result').classList.add('hidden');
-        document.getElementById('staging-actions').classList.add('hidden');
-        document.getElementById('staging-empty').classList.remove('hidden');
-        document.getElementById('staging-id-badge').textContent = 'STANDBY';
-      };
-
-      window.commitStagingToBank = async function () {
-        const newId = getNextId();
-        const dateInput = document.getElementById('eng-date-text').value.trim() || '25-11-2026';
-        const newItem = {
-          id: newId,
-          target_date: normalizeDateDisplay(dateInput),
-          pillar: document.getElementById('eng-pillar').value,
-          platform: document.getElementById('eng-platform').value,
-          format: document.getElementById('eng-format').value,
-          hook: document.getElementById('stg-hook').value.trim(),
-          script: document.getElementById('stg-script').value.trim(),
-          full_script: document.getElementById('stg-full-script').value.trim(),
-          cta: document.getElementById('stg-cta').value.trim(),
-          status: 'Scripting',
-          notes: ''
-        };
-
-        contentBank.unshift(newItem);
-        await upsertItemToCloud(newItem);
-
-        window.cancelStaging();
-        document.getElementById('eng-raw-script').value = '';
-        document.getElementById('eng-topic-prompt').value = '';
-        showToast(`✓ ${newId} berhasil disimpan ke Bank Konten!`);
-        window.switchTab('bank');
-      };
-
-      // Inspect / Edit Modal Handlers
-      window.openInspectModal = function (id) {
-        const item = contentBank.find(i => i.id === id);
-        if (!item) return;
-        currentEditingId = id;
-
-        document.getElementById('modal-item-id').textContent = item.id;
-        document.getElementById('edit-date').value = item.target_date;
-        document.getElementById('edit-platform').value = item.platform;
-        document.getElementById('edit-status').value = item.status;
-        document.getElementById('edit-hook').value = item.hook;
-        document.getElementById('edit-script').value = item.script;
-        document.getElementById('edit-full-script').value = item.full_script || item.script;
-        document.getElementById('edit-cta').value = item.cta;
-        document.getElementById('edit-notes').value = item.notes || '';
-
-        document.getElementById('inspect-modal').classList.remove('hidden');
-      };
-
-      window.closeInspectModal = function () {
-        currentEditingId = null;
-        document.getElementById('inspect-modal').classList.add('hidden');
-      };
-
-      window.saveEditedItem = async function () {
-        if (!currentEditingId) return;
-        const idx = contentBank.findIndex(i => i.id === currentEditingId);
-        if (idx === -1) return;
-
-        contentBank[idx] = {
-          ...contentBank[idx],
-          target_date: normalizeDateDisplay(document.getElementById('edit-date').value.trim()),
-          platform: document.getElementById('edit-platform').value,
-          status: document.getElementById('edit-status').value,
-          hook: document.getElementById('edit-hook').value.trim(),
-          script: document.getElementById('edit-script').value.trim(),
-          full_script: document.getElementById('edit-full-script').value.trim(),
-          cta: document.getElementById('edit-cta').value.trim(),
-          notes: document.getElementById('edit-notes').value.trim()
-        };
-
-        await upsertItemToCloud(contentBank[idx]);
-        renderAll();
-        window.closeInspectModal();
-        showToast(`✓ Perubahan ${contentBank[idx].id} tersimpan`);
-      };
-
-      window.deleteCurrentItem = async function () {
-        if (!currentEditingId) return;
-        const targetId = currentEditingId;
-        contentBank = contentBank.filter(i => i.id !== targetId);
-        await deleteItemFromCloud(targetId);
-        renderAll();
-        window.closeInspectModal();
-        showToast(`Unit ${targetId} dihapus`);
-      };
-
-      window.copyFullScript = function () {
-        const txt = document.getElementById('edit-full-script').value;
-        navigator.clipboard?.writeText(txt);
-        showToast('📋 Skrip lengkap disalin ke clipboard');
-      };
-
-      // Settings Modal Handlers
-      window.openSettingsModal = function () {
-        const cfg = getConfig();
-        document.getElementById('cfg-gemini-key').value = cfg.geminiKey;
-        document.getElementById('cfg-sb-url').value = cfg.sbUrl;
-        document.getElementById('cfg-sb-key').value = cfg.sbKey;
-        document.getElementById('settings-modal').classList.remove('hidden');
-      };
-
-      window.closeSettingsModal = function () {
-        document.getElementById('settings-modal').classList.add('hidden');
-      };
-
-      window.saveSettings = async function () {
-        const gKey = document.getElementById('cfg-gemini-key').value.trim();
-        const sUrl = document.getElementById('cfg-sb-url').value.trim();
-        const sKey = document.getElementById('cfg-sb-key').value.trim();
-
-        if (gKey) localStorage.setItem('tlb_gemini_key', gKey);
-        if (sUrl) localStorage.setItem('tlb_sb_url', sUrl);
-        if (sKey) localStorage.setItem('tlb_sb_key', sKey);
-
-        initSupabase();
-        window.closeSettingsModal();
-        await window.syncFromSupabase(true);
-      };
-
-      // Boot sequence
-      document.addEventListener('DOMContentLoaded', function () {
-        initSupabase();
-        window.syncFromSupabase(false);
-      });
-    })();
-  </script>
-</body>
-</html>
+            class="nav-btn font-display px-3 sm:px-4 py-2 rounded-lg text-[10px] sm:text-xs font-bold trackin
